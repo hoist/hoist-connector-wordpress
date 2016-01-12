@@ -1,0 +1,7 @@
+deploy:
+  build: .
+  environment:
+   - NODE_ENV=docker
+   - ROOT_CONNECTOR_DIR=/shares/connectors
+  volumes_from:
+   - hoist_config_1

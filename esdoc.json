@@ -1,0 +1,11 @@
+{
+  "source": "./src",
+  "destination": "./code-docs",
+  "access": ["public", "protected"],
+  "test": {
+    "type": "mocha",
+    "source": "./tests",
+    "includes": ["(spec|Spec|tests|Test)\\.(js|es6)$"]
+  },
+  "index": "./README.md"
+}

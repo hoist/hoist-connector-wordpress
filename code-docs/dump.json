@@ -1,0 +1,1541 @@
+[
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/connector.js",
+    "memberof": null,
+    "longname": "src/connector.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import {OAuth2ConnectorBase} from '@hoist/oauth-connector';\nimport {merge} from 'lodash';\n\nlet overrides = {\n  baseSite: 'https://public-api.wordpress.com',\n  accessTokenPath: '/oauth2/token',\n  authorizationPath: '/oauth2/authorize'\n};\nlet apiBaseUri = 'https://public-api.wordpress.com/rest/v1.1'\n/**\n   * A Hoist Connector for connecting to GitLab\n   * @extends {OAuth2ConnectorBase}\n   */\nexport default class WordpressConnector extends OAuth2ConnectorBase {\n\n  /**\n   * create a new connector\n   * @param {object} configuration - the configuration properties to use\n   * @param {string} configuration.clientId - the OAuth2 client id\n   * @param {string} configuration.clientSecret - the OAuth2 client secret\n   */\n  constructor (configuration) {\n    super(merge({}, configuration, overrides));\n    this._clientId = configuration.clientId;\n    this._configuration = configuration;\n  }\n\n  /**\n   * @private\n   * @param AuthorizationStore authorization the users authorisation store\n   * @returns Promise<object> an object containing key value pairs to send with the client to the authorization url\n   */\n  _authorizeParams (authorization) {\n    return super._authorizeParams(authorization).then((params) => {\n      params.response_type = \"code\";\n      params.scope = 'global';\n      return params;\n    });\n  }\n  //use authorization params as it has redirect uri\n  _accessParams (authorization) {\n    return super._authorizeParams(authorization).then((params) => {\n      return params || {};\n    }).then((params) => {\n      params.grant_type = \"authorization_code\"\n      return params;\n    });\n  }\n  static defaultSettings () {\n    return Promise.resolve({});\n  }\n\n  get (path) {\n    let uri = `${apiBaseUri}${path}`;\n    return this._performRequest('GET', uri).then((result) => {\n      return JSON.parse(result[0]);\n    });\n  }\n  post (path, body) {\n    let uri = `${apiBaseUri}${path}`;\n    return this._performRequest('POST', uri, body).then((result) => {\n      return JSON.parse(result[0]);\n    });\n  }\n  put (path, body) {\n    let uri = `${apiBaseUri}${path}`;\n    return this._performRequest('PUT', uri, body).then((result) => {\n      return JSON.parse(result[0]);\n    });\n  }\n  patch (path, body) {\n    let uri = `${apiBaseUri}${path}`;\n    return this._performRequest('PATCH', uri, body).then((result) => {\n      return JSON.parse(result[0]);\n    });\n  }\n  delete (path) {\n    let uri = `${apiBaseUri}${path}`;\n    return this._performRequest('DELETE', uri).then((result) => {\n      return JSON.parse(result[0]);\n    });\n  }\n}\n\n/**\n * @external {OAuth2ConnectorBase} https://doc.esdoc.org/github.com/hoist/oauth-connector/class/src/oauth2_connector.js~OAuth2ConnectorBase.html\n */\n"
+  },
+  {
+    "kind": "variable",
+    "static": true,
+    "variation": null,
+    "name": "overrides",
+    "memberof": "src/connector.js",
+    "longname": "src/connector.js~overrides",
+    "access": null,
+    "export": false,
+    "importPath": "hoist-connector-wordpress/src/connector.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 4,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "variable",
+    "static": true,
+    "variation": null,
+    "name": "apiBaseUri",
+    "memberof": "src/connector.js",
+    "longname": "src/connector.js~apiBaseUri",
+    "access": null,
+    "export": false,
+    "importPath": "hoist-connector-wordpress/src/connector.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 9,
+    "undocument": true,
+    "type": {
+      "types": [
+        "string"
+      ]
+    }
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "WordpressConnector",
+    "memberof": "src/connector.js",
+    "longname": "src/connector.js~WordpressConnector",
+    "access": null,
+    "export": true,
+    "importPath": "hoist-connector-wordpress/src/connector.js",
+    "importStyle": "WordpressConnector",
+    "description": "A Hoist Connector for connecting to GitLab",
+    "lineNumber": 14,
+    "interface": false,
+    "extends": [
+      "OAuth2ConnectorBase"
+    ]
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "OAuth2ConnectorBase",
+    "externalLink": "https://doc.esdoc.org/github.com/hoist/oauth-connector/class/src/oauth2_connector.js~OAuth2ConnectorBase.html",
+    "memberof": "src/connector.js",
+    "longname": "src/connector.js~OAuth2ConnectorBase",
+    "access": null,
+    "description": null
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "src/connector.js~WordpressConnector",
+    "longname": "src/connector.js~WordpressConnector#constructor",
+    "access": null,
+    "description": "create a new connector",
+    "lineNumber": 22,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "configuration",
+        "description": "the configuration properties to use"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "configuration.clientId",
+        "description": "the OAuth2 client id"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "configuration.clientSecret",
+        "description": "the OAuth2 client secret"
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_clientId",
+    "memberof": "src/connector.js~WordpressConnector",
+    "longname": "src/connector.js~WordpressConnector#_clientId",
+    "access": null,
+    "description": null,
+    "lineNumber": 24,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_configuration",
+    "memberof": "src/connector.js~WordpressConnector",
+    "longname": "src/connector.js~WordpressConnector#_configuration",
+    "access": null,
+    "description": null,
+    "lineNumber": 25,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_authorizeParams",
+    "memberof": "src/connector.js~WordpressConnector",
+    "longname": "src/connector.js~WordpressConnector#_authorizeParams",
+    "access": "private",
+    "description": null,
+    "lineNumber": 33,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "Promise<object> an object containing key value pairs to send with the client to the authorization url"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "AuthorizationStore",
+        "description": "authorization the users authorisation store"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "*"
+      ],
+      "spread": false,
+      "description": "Promise<object> an object containing key value pairs to send with the client to the authorization url"
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_accessParams",
+    "memberof": "src/connector.js~WordpressConnector",
+    "longname": "src/connector.js~WordpressConnector#_accessParams",
+    "access": null,
+    "description": null,
+    "lineNumber": 41,
+    "undocument": true,
+    "params": [
+      {
+        "name": "authorization",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": true,
+    "variation": null,
+    "name": "defaultSettings",
+    "memberof": "src/connector.js~WordpressConnector",
+    "longname": "src/connector.js~WordpressConnector.defaultSettings",
+    "access": null,
+    "description": null,
+    "lineNumber": 49,
+    "undocument": true,
+    "params": [],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "get",
+    "memberof": "src/connector.js~WordpressConnector",
+    "longname": "src/connector.js~WordpressConnector#get",
+    "access": null,
+    "description": null,
+    "lineNumber": 53,
+    "undocument": true,
+    "params": [
+      {
+        "name": "path",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "post",
+    "memberof": "src/connector.js~WordpressConnector",
+    "longname": "src/connector.js~WordpressConnector#post",
+    "access": null,
+    "description": null,
+    "lineNumber": 59,
+    "undocument": true,
+    "params": [
+      {
+        "name": "path",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "body",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "put",
+    "memberof": "src/connector.js~WordpressConnector",
+    "longname": "src/connector.js~WordpressConnector#put",
+    "access": null,
+    "description": null,
+    "lineNumber": 65,
+    "undocument": true,
+    "params": [
+      {
+        "name": "path",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "body",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "patch",
+    "memberof": "src/connector.js~WordpressConnector",
+    "longname": "src/connector.js~WordpressConnector#patch",
+    "access": null,
+    "description": null,
+    "lineNumber": 71,
+    "undocument": true,
+    "params": [
+      {
+        "name": "path",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "body",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "delete",
+    "memberof": "src/connector.js~WordpressConnector",
+    "longname": "src/connector.js~WordpressConnector#delete",
+    "access": null,
+    "description": null,
+    "lineNumber": 77,
+    "undocument": true,
+    "params": [
+      {
+        "name": "path",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/poll.js",
+    "memberof": null,
+    "longname": "src/poll.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import WordpressConnector from './connector';\nimport logger from '@hoist/logger';\nimport Moment from 'moment'\nimport errors from '@hoist/errors';\nimport config from 'config';\n\nvar ConnectorRequiresAuthorizationError = errors.create({\n  name: 'ConnectorRequiresAuthorizationError'\n});\n\nclass WordpressPoller {\n  constructor(context) {\n    this._logger = logger.child({\n      cls: this.constructor.name,\n      subscription: context.subscription._id,\n      application: context.application._id\n    });\n    this._context = context;\n    this._connector = new WordpressConnector(context.settings);\n  }\n  poll() {\n    return this.assertCanPoll()\n      .then((hooksSetup) => {\n        if (!hooksSetup) {\n          return this.setupHook();\n        }\n      }).catch((err) => {\n        this._logger.error(err);\n        if (!(err instanceof ConnectorRequiresAuthorizationError)) {\n          this._logger.alert(err);\n        }\n      });\n  }\n  assertCanPoll() {\n    var hooksSetup = this._context.subscription.get('setup');\n    return Promise.resolve()\n      .then(() => {\n        if (hooksSetup) {\n          //we've already setup this subscription\n          this._context.subscription.delayTill(new Moment().add(100, 'days').toDate());\n        }\n      })\n      .then(() => {\n        this._logger.info('checking credentials');\n        if (!(this._context.authorization)) {\n          this._logger.warn('Connector needs auth and no auth set');\n          //we've already setup this subscription\n          this._context.subscription.delayTill(new Moment().add(1, 'hour').toDate());\n          throw new ConnectorRequiresAuthorizationError();\n        }\n        if (!this._context.authorization.get('SubscriptionProject')) {\n          this._logger.warn('Connector needs a subscription project and none set');\n          //we've already setup this subscription\n          this._context.subscription.delayTill(new Moment().add(1, 'hour').toDate());\n          throw new ConnectorRequiresAuthorizationError();\n        }\n      }).then(() => {\n        return hooksSetup;\n      });\n  }\n  setupHook() {\n    return Promise.resolve()\n      .then(() => {\n        this._logger.info('setting connector authorization');\n        return this._connector.authorize(this._context.authorization);\n      }).then(() => {\n        this._logger.info('creating webhook endpoint');\n        let hookUri = `https://${config.get('Hoist.domains.endpoint')}/connector/${this._context.authorization._token.key}`;\n        this._connector.post(`/projects/${this._context.authorization.get('SubscriptionProject')}/hooks`, {\n          \"url\":hookUri,\n          \"push_events\": true,\n          \"issues_events\": true,\n          \"merge_requests_events\": true,\n          \"tag_push_events\": true,\n          \"note_events\": true,\n          \"build_events\": true\n        });\n      }).then(() => {\n        this._logger.info('webhooks created');\n        return this._context.subscription.set('setup', true);\n      });\n  }\n}\n\nexport default function (context) {\n  let poller = new WordpressPoller(context);\n  return poller.poll();\n};\n"
+  },
+  {
+    "kind": "variable",
+    "static": true,
+    "variation": null,
+    "name": "ConnectorRequiresAuthorizationError",
+    "memberof": "src/poll.js",
+    "longname": "src/poll.js~ConnectorRequiresAuthorizationError",
+    "access": null,
+    "export": false,
+    "importPath": "hoist-connector-wordpress/src/poll.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 7,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "WordpressPoller",
+    "memberof": "src/poll.js",
+    "longname": "src/poll.js~WordpressPoller",
+    "access": null,
+    "export": false,
+    "importPath": "hoist-connector-wordpress/src/poll.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 11,
+    "undocument": true,
+    "interface": false
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "src/poll.js~WordpressPoller",
+    "longname": "src/poll.js~WordpressPoller#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 12,
+    "undocument": true,
+    "params": [
+      {
+        "name": "context",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_logger",
+    "memberof": "src/poll.js~WordpressPoller",
+    "longname": "src/poll.js~WordpressPoller#_logger",
+    "access": null,
+    "description": null,
+    "lineNumber": 13,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_context",
+    "memberof": "src/poll.js~WordpressPoller",
+    "longname": "src/poll.js~WordpressPoller#_context",
+    "access": null,
+    "description": null,
+    "lineNumber": 18,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_connector",
+    "memberof": "src/poll.js~WordpressPoller",
+    "longname": "src/poll.js~WordpressPoller#_connector",
+    "access": null,
+    "description": null,
+    "lineNumber": 19,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "poll",
+    "memberof": "src/poll.js~WordpressPoller",
+    "longname": "src/poll.js~WordpressPoller#poll",
+    "access": null,
+    "description": null,
+    "lineNumber": 21,
+    "undocument": true,
+    "params": [],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "assertCanPoll",
+    "memberof": "src/poll.js~WordpressPoller",
+    "longname": "src/poll.js~WordpressPoller#assertCanPoll",
+    "access": null,
+    "description": null,
+    "lineNumber": 34,
+    "undocument": true,
+    "params": [],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "setupHook",
+    "memberof": "src/poll.js~WordpressPoller",
+    "longname": "src/poll.js~WordpressPoller#setupHook",
+    "access": null,
+    "description": null,
+    "lineNumber": 61,
+    "undocument": true,
+    "params": [],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "function",
+    "static": true,
+    "variation": null,
+    "name": "poll",
+    "memberof": "src/poll.js",
+    "longname": "src/poll.js~poll",
+    "access": null,
+    "export": true,
+    "importPath": "hoist-connector-wordpress/src/poll.js",
+    "importStyle": "poll",
+    "description": null,
+    "lineNumber": 85,
+    "undocument": true,
+    "params": [
+      {
+        "name": "context",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Infinity",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Infinity",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Infinity",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "NaN",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NaN",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~NaN",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "undefined",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~undefined",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "null",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~null",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Object",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Object",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "object",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~object",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Function",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Function",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "function",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~function",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Boolean",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Boolean",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "boolean",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~boolean",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Symbol",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Symbol",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Error",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Error",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "EvalError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/EvalError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~EvalError",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "InternalError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/InternalError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~InternalError",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "RangeError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RangeError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~RangeError",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "ReferenceError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ReferenceError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~ReferenceError",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "SyntaxError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SyntaxError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~SyntaxError",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "TypeError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~TypeError",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "URIError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/URIError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~URIError",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Number",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Number",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "number",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~number",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Date",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Date",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "String",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~String",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "string",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~string",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "RegExp",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~RegExp",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Array",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Int8Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int8Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Int8Array",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Uint8Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint8Array",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Uint8ClampedArray",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8ClampedArray",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint8ClampedArray",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Int16Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int16Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Int16Array",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Uint16Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint16Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint16Array",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Int32Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int32Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Int32Array",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Uint32Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint32Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint32Array",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Float32Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float32Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Float32Array",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Float64Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float64Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Float64Array",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Map",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Map",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Set",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Set",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "WeakMap",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~WeakMap",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "WeakSet",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~WeakSet",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "ArrayBuffer",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~ArrayBuffer",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "DataView",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~DataView",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "JSON",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~JSON",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Promise",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Promise",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Generator",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Generator",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "GeneratorFunction",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/GeneratorFunction",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~GeneratorFunction",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Reflect",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Reflect",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Proxy",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Proxy",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "CanvasRenderingContext2D",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~CanvasRenderingContext2D",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "DocumentFragment",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~DocumentFragment",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Element",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Element",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~Element",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Event",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Event",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~Event",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Node",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Node",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~Node",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "NodeList",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/NodeList",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~NodeList",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "XMLHttpRequest",
+    "externalLink": "https://developer.mozilla.org/en/docs/Web/API/XMLHttpRequest",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~XMLHttpRequest",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "testFile",
+    "static": true,
+    "variation": null,
+    "name": "tests/integration_tests/auth_tests.js",
+    "memberof": null,
+    "longname": "tests/integration_tests/auth_tests.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import WordpressConnector from '../../lib/connector';\nimport sinon from 'sinon';\nimport config from 'config';\nimport {expect} from 'chai';\nimport Nightmare from 'nightmare';\nimport url from 'url';\nimport os from 'os';\n\nlet osType = os.type();\ndescribe('authorization steps', function () {\n  let connector;\n  let clientId = config.get('clientId');\n  let clientSecret = config.get('clientSecret');\n  let nightmare;\n\n  before(function () {\n    if (osType !== 'Linux') {\n      nightmare = Nightmare({show: true});\n    }\n    connector = new WordpressConnector({clientId, clientSecret});\n\n  });\n  after(function () {\n    if (osType !== 'Linux') {\n      return nightmare.end();\n    }\n  })\n  describe('on first bounce', () => {\n    let bounce;\n    before(function () {\n\n      bounce = {\n        get: function () {\n          return undefined;\n        },\n        delete: function () {\n          return Promise.resolve(null);\n        },\n        set: function () {\n          console.log('set', arguments);\n          return Promise.resolve(null);\n        },\n        redirect: function () {\n          console.log('redirect', arguments);\n          return Promise.resolve(null);\n        },\n        done: function () {\n          console.log('done', arguments);\n          return Promise.resolve(null);\n        }\n      };\n      sinon.spy(bounce, 'get');\n      sinon.spy(bounce, 'set');\n      sinon.spy(bounce, 'redirect');\n      return connector.receiveBounce(bounce);\n    });\n    it('should save current step', () => {\n      return expect(bounce.set).to.have.been.calledWith('currentStep', 'authorization');\n    });\n    it('should receive a redirect', () => {\n      return expect(bounce.redirect).to.have.been.calledWith(`https://public-api.wordpress.com/oauth2/authorize?redirect_uri=https%3A%2F%2Fbouncer.hoist.test%2Fbounce&response_type=code&scope=global&client_id=${clientId}`);\n    });\n  });\n  describe('on return from Wordpress', function () {\n    let bounce;\n    this.timeout(50000);\n    let uri;\n\n    before(function () {\n      if (osType === 'Linux') {\n        this.skip();\n      }\n      bounce = {\n        store: {},\n        get: function (key) {\n          return this.store[key];\n        },\n        delete: function (key) {\n          delete this.store[key];\n          return Promise.resolve(null);\n        },\n        set: function (key, value) {\n          this.store[key] = value;\n          return Promise.resolve(null);\n        },\n        redirect: function () {\n          console.log('redirect', arguments);\n          return Promise.resolve(null);\n        },\n        done: function () {\n          console.log('done', arguments);\n          return Promise.resolve(null);\n        }\n      };\n      sinon.spy(bounce, 'get');\n      sinon.spy(bounce, 'set');\n      sinon.spy(bounce, 'redirect');\n      return Promise.resolve(connector.receiveBounce(bounce)).then(function () {\n        let authorizeUri = bounce.redirect.getCall(0).args[0];\n        return Promise.resolve(nightmare.goto(authorizeUri));\n      }).then(() => {\n        return Promise.resolve(nightmare.type('#username', config.get('username')).type('#password', config.get('password')).click('.signin.button-primary'));\n      }).then(() => {\n        return Promise.resolve(nightmare.wait(500).exists('#message'));\n      }).then((finished) => {\n        if (finished) {\n          Promise.resolve(nightmare.url())\n        } else {\n          return Promise.resolve(nightmare.click('.button-primary.approve').wait('#message').url());\n        }\n      }).then((u) => {\n        console.log(u);\n        uri = url.parse(u, true);\n        bounce.query = uri.query;\n      }).then(() => {\n        return connector.receiveBounce(bounce);\n      });\n\n    });\n    it('should save state', () => {\n      console.log(bounce.store);\n      return expect(bounce.store['AccessToken']).to.exist;\n    });\n  })\n});\n"
+  },
+  {
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe0",
+    "testId": 0,
+    "memberof": "tests/integration_tests/auth_tests.js",
+    "testDepth": 0,
+    "longname": "tests/integration_tests/auth_tests.js~describe0",
+    "access": null,
+    "description": "authorization steps",
+    "lineNumber": 10
+  },
+  {
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe1",
+    "testId": 1,
+    "memberof": "tests/integration_tests/auth_tests.js~describe0",
+    "testDepth": 1,
+    "longname": "tests/integration_tests/auth_tests.js~describe0.describe1",
+    "access": null,
+    "description": "on first bounce",
+    "lineNumber": 28
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it2",
+    "testId": 2,
+    "memberof": "tests/integration_tests/auth_tests.js~describe0.describe1",
+    "testDepth": 2,
+    "longname": "tests/integration_tests/auth_tests.js~describe0.describe1.it2",
+    "access": null,
+    "description": "should save current step",
+    "lineNumber": 57
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it3",
+    "testId": 3,
+    "memberof": "tests/integration_tests/auth_tests.js~describe0.describe1",
+    "testDepth": 2,
+    "longname": "tests/integration_tests/auth_tests.js~describe0.describe1.it3",
+    "access": null,
+    "description": "should receive a redirect",
+    "lineNumber": 60
+  },
+  {
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe4",
+    "testId": 4,
+    "memberof": "tests/integration_tests/auth_tests.js~describe0",
+    "testDepth": 1,
+    "longname": "tests/integration_tests/auth_tests.js~describe0.describe4",
+    "access": null,
+    "description": "on return from Wordpress",
+    "lineNumber": 64
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it5",
+    "testId": 5,
+    "memberof": "tests/integration_tests/auth_tests.js~describe0.describe4",
+    "testDepth": 2,
+    "longname": "tests/integration_tests/auth_tests.js~describe0.describe4.it5",
+    "access": null,
+    "description": "should save state",
+    "lineNumber": 120
+  },
+  {
+    "kind": "testFile",
+    "static": true,
+    "variation": null,
+    "name": "tests/integration_tests/posts_tests.js",
+    "memberof": null,
+    "longname": "tests/integration_tests/posts_tests.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import WordpressConnector from '../../lib/connector';\nimport config from 'config';\nimport {expect} from 'chai';\ndescribe('posts api', function () {\n  this.timeout(5000);\n  describe('create new post', () => {\n    let authorization;\n    let _result;\n    let connector;\n    let title = \"Post created by Unit Test: \" + new Date();\n    before(() => {\n      authorization = {\n        store: {},\n        get: function (key) {\n          return this.store[key];\n        },\n        delete: function (key) {\n          delete this.store[key];\n          return Promise.resolve(null);\n        },\n        set: function (key, value) {\n          this.store[key] = value;\n          return Promise.resolve(null);\n        },\n        redirect: function () {\n          console.log('redirect', arguments);\n          return Promise.resolve(null);\n        },\n        done: function () {\n          console.log('done', arguments);\n          return Promise.resolve(null);\n        }\n      };\n      connector = new WordpressConnector({clientId: config.get('clientId'), clientSecret: config.get('clientSecret')});\n      authorization.set('AccessToken', config.get('accessToken'));\n      connector.authorize(authorization)\n      return connector.post('/sites/105230485/posts/new', {\n        \"title\": title,\n        \"excerpt\": \"This is a test issue from the Hoist connector unit tests\",\n        \"content\": \"This post was created as a test for hoist.io\",\n        \"author\": \"hoistsupport\"\n      }).then((result) => {\n        console.log(result);\n        _result = result;\n      });\n\n    });\n    it('returns correct response', () => {\n      return expect(_result.title).to.eql(title);\n    });\n  });\n  describe('get posts', () => {\n    let authorization;\n    let _result;\n    let connector;\n    before(() => {\n      authorization = {\n        store: {},\n        get: function (key) {\n          return this.store[key];\n        },\n        delete: function (key) {\n          delete this.store[key];\n          return Promise.resolve(null);\n        },\n        set: function (key, value) {\n          this.store[key] = value;\n          return Promise.resolve(null);\n        },\n        redirect: function () {\n          console.log('redirect', arguments);\n          return Promise.resolve(null);\n        },\n        done: function () {\n          console.log('done', arguments);\n          return Promise.resolve(null);\n        }\n      };\n      connector = new WordpressConnector({clientId: config.get('clientId'), clientSecret: config.get('clientSecret')});\n      authorization.set('AccessToken', config.get('accessToken'));\n      connector.authorize(authorization)\n      return connector.get('/sites/105230485/posts').then((result) => {\n        _result = result;\n      });\n\n    });\n    it('returns correct response', () => {\n      return expect(_result.posts.length).to.be.greaterThan(0);\n    });\n  });\n  describe('edit post', () => {\n    let authorization;\n    let _result;\n    let connector;\n    let title = \"Post edited by Unit Test: \" + new Date();\n    before(() => {\n      authorization = {\n        store: {},\n        get: function (key) {\n          return this.store[key];\n        },\n        delete: function (key) {\n          delete this.store[key];\n          return Promise.resolve(null);\n        },\n        set: function (key, value) {\n          this.store[key] = value;\n          return Promise.resolve(null);\n        },\n        redirect: function () {\n          console.log('redirect', arguments);\n          return Promise.resolve(null);\n        },\n        done: function () {\n          console.log('done', arguments);\n          return Promise.resolve(null);\n        }\n      };\n      connector = new WordpressConnector({clientId: config.get('clientId'), clientSecret: config.get('clientSecret')});\n      authorization.set('AccessToken', config.get('accessToken'));\n      connector.authorize(authorization)\n\n      return connector.get('/sites/105230485/posts').then((r) => {\n        let uri = `/sites/105230485/posts/${r.posts[0].ID}`\n        return connector.post(uri, {\"title\": title}).then((result) => {\n          _result = result;\n        }).catch((err) => {\n          console.log(err);\n        });\n      });\n\n    });\n    it('returns correct response', () => {\n      return expect(_result.title).to.eql(title);\n    });\n  });\n  describe('delete post', () => {\n    let authorization;\n    let _result;\n    let connector;\n    before(() => {\n      authorization = {\n        store: {},\n        get: function (key) {\n          return this.store[key];\n        },\n        delete: function (key) {\n          delete this.store[key];\n          return Promise.resolve(null);\n        },\n        set: function (key, value) {\n          this.store[key] = value;\n          return Promise.resolve(null);\n        },\n        redirect: function () {\n          console.log('redirect', arguments);\n          return Promise.resolve(null);\n        },\n        done: function () {\n          console.log('done', arguments);\n          return Promise.resolve(null);\n        }\n      };\n      connector = new WordpressConnector({clientId: config.get('clientId'), clientSecret: config.get('clientSecret')});\n      authorization.set('AccessToken', config.get('accessToken'));\n      connector.authorize(authorization)\n\n      return connector.get('/sites/105230485/posts?status=publish').then((r) => {\n        let uri = `/sites/105230485/posts/${r.posts[0].ID}/delete`\n        return connector.post(uri, {}).then((result) => {\n          _result = result;\n        }).catch((err) => {\n          console.log(err);\n        });\n      });\n\n    });\n    it('returns correct response', () => {\n      return expect(_result.status).to.eql('trash');\n    });\n  });\n});\n"
+  },
+  {
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe6",
+    "testId": 6,
+    "memberof": "tests/integration_tests/posts_tests.js",
+    "testDepth": 0,
+    "longname": "tests/integration_tests/posts_tests.js~describe6",
+    "access": null,
+    "description": "posts api",
+    "lineNumber": 4
+  },
+  {
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe7",
+    "testId": 7,
+    "memberof": "tests/integration_tests/posts_tests.js~describe6",
+    "testDepth": 1,
+    "longname": "tests/integration_tests/posts_tests.js~describe6.describe7",
+    "access": null,
+    "description": "create new post",
+    "lineNumber": 6
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it8",
+    "testId": 8,
+    "memberof": "tests/integration_tests/posts_tests.js~describe6.describe7",
+    "testDepth": 2,
+    "longname": "tests/integration_tests/posts_tests.js~describe6.describe7.it8",
+    "access": null,
+    "description": "returns correct response",
+    "lineNumber": 48
+  },
+  {
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe9",
+    "testId": 9,
+    "memberof": "tests/integration_tests/posts_tests.js~describe6",
+    "testDepth": 1,
+    "longname": "tests/integration_tests/posts_tests.js~describe6.describe9",
+    "access": null,
+    "description": "get posts",
+    "lineNumber": 52
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it10",
+    "testId": 10,
+    "memberof": "tests/integration_tests/posts_tests.js~describe6.describe9",
+    "testDepth": 2,
+    "longname": "tests/integration_tests/posts_tests.js~describe6.describe9.it10",
+    "access": null,
+    "description": "returns correct response",
+    "lineNumber": 87
+  },
+  {
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe11",
+    "testId": 11,
+    "memberof": "tests/integration_tests/posts_tests.js~describe6",
+    "testDepth": 1,
+    "longname": "tests/integration_tests/posts_tests.js~describe6.describe11",
+    "access": null,
+    "description": "edit post",
+    "lineNumber": 91
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it12",
+    "testId": 12,
+    "memberof": "tests/integration_tests/posts_tests.js~describe6.describe11",
+    "testDepth": 2,
+    "longname": "tests/integration_tests/posts_tests.js~describe6.describe11.it12",
+    "access": null,
+    "description": "returns correct response",
+    "lineNumber": 133
+  },
+  {
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe13",
+    "testId": 13,
+    "memberof": "tests/integration_tests/posts_tests.js~describe6",
+    "testDepth": 1,
+    "longname": "tests/integration_tests/posts_tests.js~describe6.describe13",
+    "access": null,
+    "description": "delete post",
+    "lineNumber": 137
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it14",
+    "testId": 14,
+    "memberof": "tests/integration_tests/posts_tests.js~describe6.describe13",
+    "testDepth": 2,
+    "longname": "tests/integration_tests/posts_tests.js~describe6.describe13.it14",
+    "access": null,
+    "description": "returns correct response",
+    "lineNumber": 178
+  },
+  {
+    "kind": "testFile",
+    "static": true,
+    "variation": null,
+    "name": "tests/integration_tests/sites_tests.js",
+    "memberof": null,
+    "longname": "tests/integration_tests/sites_tests.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import WordpressConnector from '../../lib/connector';\nimport config from 'config';\nimport {\n  expect\n}\nfrom 'chai';\ndescribe('get sites', function () {\n  this.timeout(5000);\n  let authorization;\n  let _result;\n  let connector;\n  before(() => {\n    authorization = {\n      store: {},\n      get: function (key) {\n        return this.store[key];\n      },\n      delete: function (key) {\n        delete this.store[key];\n        return Promise.resolve(null);\n      },\n      set: function (key, value) {\n        this.store[key] = value;\n        return Promise.resolve(null);\n      },\n      redirect: function () {\n        console.log('redirect', arguments);\n        return Promise.resolve(null);\n      },\n      done: function () {\n        console.log('done', arguments);\n        return Promise.resolve(null);\n      }\n    };\n    connector = new WordpressConnector({\n      clientId: config.get('clientId'),\n      clientSecret: config.get('clientSecret')\n    });\n    authorization.set('AccessToken', config.get('accessToken'));\n    connector.authorize(authorization)\n    return connector.get('/me/sites')\n      .then((result) => {\n        console.log(result);\n        _result = result;\n      });\n\n  });\n  it('returns users projects', () => {\n    return expect(_result.sites.map((site) => site.name)).to.contain('hoistio');\n  });\n});\n"
+  },
+  {
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe15",
+    "testId": 15,
+    "memberof": "tests/integration_tests/sites_tests.js",
+    "testDepth": 0,
+    "longname": "tests/integration_tests/sites_tests.js~describe15",
+    "access": null,
+    "description": "get sites",
+    "lineNumber": 7
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it16",
+    "testId": 16,
+    "memberof": "tests/integration_tests/sites_tests.js~describe15",
+    "testDepth": 1,
+    "longname": "tests/integration_tests/sites_tests.js~describe15.it16",
+    "access": null,
+    "description": "returns users projects",
+    "lineNumber": 48
+  },
+  {
+    "kind": "testFile",
+    "static": true,
+    "variation": null,
+    "name": "tests/unit_tests/settings_tests.js",
+    "memberof": null,
+    "longname": "tests/unit_tests/settings_tests.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import GitLabConnector from '../../lib/connector';\nimport {\n  expect\n}\nfrom 'chai';\ndescribe('default settings', () => {\n  let connector;\n  it('exposes defaultSettings method', () => {\n    return expect(GitLabConnector.defaultSettings).to.exist;\n  });\n})\n"
+  },
+  {
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe17",
+    "testId": 17,
+    "memberof": "tests/unit_tests/settings_tests.js",
+    "testDepth": 0,
+    "longname": "tests/unit_tests/settings_tests.js~describe17",
+    "access": null,
+    "description": "default settings",
+    "lineNumber": 6
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it18",
+    "testId": 18,
+    "memberof": "tests/unit_tests/settings_tests.js~describe17",
+    "testDepth": 1,
+    "longname": "tests/unit_tests/settings_tests.js~describe17.it18",
+    "access": null,
+    "description": "exposes defaultSettings method",
+    "lineNumber": 8
+  }
+]

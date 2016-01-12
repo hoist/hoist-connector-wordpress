@@ -1,0 +1,26 @@
+{
+  "coverage": "22.22%",
+  "expectCount": 9,
+  "actualCount": 2,
+  "files": {
+    "src/connector.js": {
+      "expectCount": 8,
+      "actualCount": 2,
+      "undocumentLines": [
+        49,
+        77,
+        53,
+        71,
+        59,
+        65
+      ]
+    },
+    "src/poll.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        85
+      ]
+    }
+  }
+}

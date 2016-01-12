@@ -1,0 +1,54 @@
+{
+  "name": "hoist-connector-wordpress",
+  "version": "1.0.0",
+  "description": "Hoist's wordpress Connector",
+  "main": "./lib/connector.js",
+  "scripts": {
+    "test": "gulp test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hoist/hoist-connector-wordpress.git"
+  },
+  "author": "Hoist Apps Ltd",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hoist/hoist-connector-wordpress/issues"
+  },
+  "devDependencies": {
+    "@hoist/model": "^1.1.0",
+    "babel": "^5.8.23",
+    "babel-eslint": "^5.0.0-beta6",
+    "chai": "^3.2.0",
+    "chai-as-promised": "^5.1.0",
+    "config": "^1.16.0",
+    "del": "^2.0.1",
+    "esdoc": "^0.2.5",
+    "gulp": "^3.9.0",
+    "gulp-babel": "^5.2.1",
+    "gulp-eslint": "^1.0.0",
+    "gulp-istanbul": "^0.10.0",
+    "gulp-load-plugins": "^1.0.0-rc.1",
+    "gulp-mocha": "^2.1.3",
+    "gulp-plumber": "^1.0.1",
+    "gulp-sourcemaps": "^1.5.2",
+    "isparta": "^3.0.4",
+    "mocha": "^2.3.1",
+    "mocha-notifier-reporter": "^0.1.1",
+    "nightmare": "hoist/nightmare",
+    "node-notifier": "^4.2.3",
+    "require-dir": "^0.3.0",
+    "run-sequence": "^1.1.2",
+    "sinon": "^1.16.1",
+    "sinon-chai": "^2.8.0"
+  },
+  "homepage": "https://github.com/hoist/hoist-connector-wordpress",
+  "dependencies": {
+    "@hoist/errors": "^1.0.3",
+    "@hoist/logger": "^1.0.5",
+    "@hoist/oauth-connector": "^1.1.0",
+    "bluebird": "^2.9.34",
+    "lodash": "^3.10.1",
+    "moment": "^2.10.6"
+  }
+}

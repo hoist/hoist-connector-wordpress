@@ -1,0 +1,19 @@
+[Unit]
+Description=Deployment for wordpress Connector
+Requires=config.service
+After=config.service
+
+[Service]
+User=core
+Type=oneshot
+ExecStartPre=-/usr/bin/docker kill wordpress-connector-deploy
+ExecStartPre=-/usr/bin/docker rm wordpress-connector-deploy
+ExecStartPre=-/usr/bin/docker pull hoist/connector-wordpress:master
+ExecStart=/usr/bin/docker run -h wordpress-connector-deploy --name wordpress-connector-deploy -e "ROOT_CONNECTOR_DIR=/shares/connectors" --volumes-from config -P hoist/connector-wordpress:master
+ExecStop=/usr/bin/docker stop wordpress-connector-deploy
+ExecStopPost=-/usr/bin/docker kill wordpress-connector-deploy
+ExecStopPost=-/usr/bin/docker rm wordpress-connector-deploy
+TimeoutStartSec=30m
+
+[X-Fleet]
+MachineMetadata=container_type=web

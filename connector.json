@@ -1,0 +1,37 @@
+{
+  "name": "wordpress",
+  "slug": "wordpress",
+  "url": "http://www.wordpress.com",
+  "auth_types": {
+    "Public": {
+      "setup_help": "./samples/setupHelp.md",
+      "requires_signing": true,
+      "features": [
+        "Access multiple wordpress Accounts",
+        "Hoist handles the OAuth"
+      ]
+    }
+  },
+  "settings": [{
+    "key": "clientId",
+    "type": "text",
+    "description": "Application Id",
+    "for_types": ["Public"],
+    "required": true
+  }, {
+    "key": "clientSecret",
+    "type": "text",
+    "description": "Secret",
+    "for_types": ["Public"],
+    "required": true
+  }],
+  "samples": {
+    "getting_started": "./samples/gettingStarted.js"
+  },
+  "endpoints": {
+    "Event": {
+      "subscribe": true,
+      "events": ["new"]
+    }
+  }
+}
