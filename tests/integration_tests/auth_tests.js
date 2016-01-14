@@ -15,10 +15,11 @@ describe('authorization steps', function () {
 
   before(function () {
     if (osType !== 'Linux') {
-      nightmare = Nightmare({show: true});
+      nightmare = Nightmare({
+        show: true
+      });
     }
     connector = new WordpressConnector({clientId, clientSecret});
-
   });
   after(function () {
     if (osType !== 'Linux') {
@@ -99,7 +100,11 @@ describe('authorization steps', function () {
         let authorizeUri = bounce.redirect.getCall(0).args[0];
         return Promise.resolve(nightmare.goto(authorizeUri));
       }).then(() => {
-        return Promise.resolve(nightmare.type('#username', config.get('username')).type('#password', config.get('password')).click('.signin.button-primary'));
+        console.log('typing');
+        return Promise.resolve(nightmare.type('#username', config.get('username')).type('#password', config.get('password'))).then(() => {
+          console.log('clicking');
+          return Promise.resolve(nightmare.click('.signin.button-primary'));
+        });
       }).then(() => {
         return Promise.resolve(nightmare.wait(500).exists('#message'));
       }).then((finished) => {

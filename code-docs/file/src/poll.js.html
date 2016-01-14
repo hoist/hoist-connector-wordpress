@@ -64,87 +64,107 @@ import logger from &apos;@hoist/logger&apos;;
 import Moment from &apos;moment&apos;
 import errors from &apos;@hoist/errors&apos;;
 import config from &apos;config&apos;;
+import url from &apos;url&apos;;
+import moment from &apos;moment&apos;;
 
-var ConnectorRequiresAuthorizationError = errors.create({
-  name: &apos;ConnectorRequiresAuthorizationError&apos;
-});
+var ConnectorRequiresAuthorizationError = errors.create({name: &apos;ConnectorRequiresAuthorizationError&apos;});
 
 class WordpressPoller {
-  constructor(context) {
-    this._logger = logger.child({
-      cls: this.constructor.name,
-      subscription: context.subscription._id,
-      application: context.application._id
-    });
+  constructor (context) {
+    this._logger = logger.child({cls: this.constructor.name, subscription: context.subscription._id, application: context.application._id});
     this._context = context;
     this._connector = new WordpressConnector(context.settings);
   }
-  poll() {
-    return this.assertCanPoll()
-      .then((hooksSetup) =&gt; {
-        if (!hooksSetup) {
-          return this.setupHook();
-        }
-      }).catch((err) =&gt; {
-        this._logger.error(err);
-        if (!(err instanceof ConnectorRequiresAuthorizationError)) {
-          this._logger.alert(err);
-        }
-      });
+  poll () {
+    return this.assertCanPoll().then(() =&gt; {
+      return this.pollForChanges();
+    }).then(() =&gt; {
+      this.context.subscription.delayTill(moment().add(5, &apos;minutes&apos;).toDate());
+    }).catch((err) =&gt; {
+      this._logger.error(err);
+      if (!(err instanceof ConnectorRequiresAuthorizationError)) {
+        this._logger.alert(err);
+      }
+    });
   }
-  assertCanPoll() {
-    var hooksSetup = this._context.subscription.get(&apos;setup&apos;);
-    return Promise.resolve()
-      .then(() =&gt; {
-        if (hooksSetup) {
-          //we&apos;ve already setup this subscription
-          this._context.subscription.delayTill(new Moment().add(100, &apos;days&apos;).toDate());
-        }
+  assertCanPoll () {
+    return Promise.resolve().then(() =&gt; {
+      this._logger.info(&apos;checking credentials&apos;);
+      if (!(this._context.authorization)) {
+        this._logger.warn(&apos;Connector needs auth and no auth set&apos;);
+        //we&apos;ve already setup this subscription
+        this._context.subscription.delayTill(new Moment().add(1, &apos;hour&apos;).toDate());
+        throw new ConnectorRequiresAuthorizationError();
+      }
+      if (!this._context.authorization.get(&apos;SubscriptionProject&apos;)) {
+        this._logger.warn(&apos;Connector needs a subscription site and none set&apos;);
+        //we&apos;ve already setup this subscription
+        this._context.subscription.delayTill(new Moment().add(1, &apos;hour&apos;).toDate());
+        throw new ConnectorRequiresAuthorizationError();
+      }
+    });
+  }
+  pollForChanges () {
+    return Promise.resolve().then(() =&gt; {
+      return Promise.all(this._context.subscription.endpoints.map((endpoint) =&gt; {
+        return this.generateUrlForEndpoint(endpoint);
+      }));
+    }).then((urls) =&gt; {
+      return this.batchRequest(urls.map(u =&gt; u.req)).then((result) =&gt; {
+        return Promise.all(this._context.subscription.endpoints.map((endpoint) =&gt; {
+          return this.saveResultForEndpoint(endpoint, urls, result);
+        }));
       })
-      .then(() =&gt; {
-        this._logger.info(&apos;checking credentials&apos;);
-        if (!(this._context.authorization)) {
-          this._logger.warn(&apos;Connector needs auth and no auth set&apos;);
-          //we&apos;ve already setup this subscription
-          this._context.subscription.delayTill(new Moment().add(1, &apos;hour&apos;).toDate());
-          throw new ConnectorRequiresAuthorizationError();
-        }
-        if (!this._context.authorization.get(&apos;SubscriptionProject&apos;)) {
-          this._logger.warn(&apos;Connector needs a subscription project and none set&apos;);
-          //we&apos;ve already setup this subscription
-          this._context.subscription.delayTill(new Moment().add(1, &apos;hour&apos;).toDate());
-          throw new ConnectorRequiresAuthorizationError();
-        }
-      }).then(() =&gt; {
-        return hooksSetup;
-      });
+    });
   }
-  setupHook() {
-    return Promise.resolve()
-      .then(() =&gt; {
-        this._logger.info(&apos;setting connector authorization&apos;);
-        return this._connector.authorize(this._context.authorization);
-      }).then(() =&gt; {
-        this._logger.info(&apos;creating webhook endpoint&apos;);
-        let hookUri = `https://${config.get(&apos;Hoist.domains.endpoint&apos;)}/connector/${this._context.authorization._token.key}`;
-        this._connector.post(`/projects/${this._context.authorization.get(&apos;SubscriptionProject&apos;)}/hooks`, {
-          &quot;url&quot;:hookUri,
-          &quot;push_events&quot;: true,
-          &quot;issues_events&quot;: true,
-          &quot;merge_requests_events&quot;: true,
-          &quot;tag_push_events&quot;: true,
-          &quot;note_events&quot;: true,
-          &quot;build_events&quot;: true
+  generateUrlForEndpoint (endpoint) {
+    return Promise.resolve().then(() =&gt; {
+      let urlObj = {
+        pathname: `/sites/${this._context.authorization.get(&apos;SubscriptionProject&apos;)}/${endpoint.toLoweCase()}`,
+        query: {}
+      };
+
+      let filterDate = this._context.subscription.get(endpoint).lastResultDate;
+      if (filterDate) {
+        urlObj.query.after = moment(filterDate).toISOString();
+      }
+      if (endpoint === &apos;Comments&apos;) {
+        urlObj.query.status = &apos;all&apos;;
+      }
+      return {endpoint: endpoint, req: url.format(urlObj)};
+    });
+  }
+  batchRequest (urls) {
+    return Promise.resolve(urls.join(&apos;&amp;urls[]=&apos;)).then((urlQuery) =&gt; {
+      return this._connector.get(`/batch?urls[]=${urlQuery}`);
+    });
+  }
+  saveResultForEndpoint (endpoint, urls, result) {
+    return Promise.resolve().then(() =&gt; {
+      let url = urls.find((u) =&gt; u.endpoint === endpoint).req;
+      let resultsForEndpoint = result[url];
+      if (resultsForEndpoint.found === 0) {
+        return;
+      } else {
+        let documents = resultsForEndpoint[endpoint.toLoweCase()];
+        return Promise.all(documents.map((document) =&gt; this.raise(endpoint, document))).then(() =&gt; {
+          return documents.map((d) =&gt; moment(d.date)).sort().pop().toDate();
+        }).then((lastResultDate) =&gt; {
+          this._context.subscription.set(endpoint, {lastResultDate});
         });
-      }).then(() =&gt; {
-        this._logger.info(&apos;webhooks created&apos;);
-        return this._context.subscription.set(&apos;setup&apos;, true);
-      });
+      }
+    });
+  }
+  raise (endpoint, document) {
+    return Promise.resolve().then(() =&gt; {
+      return this.emit(`${this._context.connectorKey}:new:${endpoint.toLoweCase()}`);
+    });
   }
 }
 
-export default function (context) {
+export default function (context, raiseMethod) {
   let poller = new WordpressPoller(context);
+  poller.emit = raiseMethod;
   return poller.poll();
 };
 </code></pre>

@@ -76,10 +76,11 @@ describe(&apos;authorization steps&apos;, function () {
 
   before(function () {
     if (osType !== &apos;Linux&apos;) {
-      nightmare = Nightmare({show: true});
+      nightmare = Nightmare({
+        show: true
+      });
     }
     connector = new WordpressConnector({clientId, clientSecret});
-
   });
   after(function () {
     if (osType !== &apos;Linux&apos;) {
@@ -160,7 +161,11 @@ describe(&apos;authorization steps&apos;, function () {
         let authorizeUri = bounce.redirect.getCall(0).args[0];
         return Promise.resolve(nightmare.goto(authorizeUri));
       }).then(() =&gt; {
-        return Promise.resolve(nightmare.type(&apos;#username&apos;, config.get(&apos;username&apos;)).type(&apos;#password&apos;, config.get(&apos;password&apos;)).click(&apos;.signin.button-primary&apos;));
+        console.log(&apos;typing&apos;);
+        return Promise.resolve(nightmare.type(&apos;#username&apos;, config.get(&apos;username&apos;)).type(&apos;#password&apos;, config.get(&apos;password&apos;))).then(() =&gt; {
+          console.log(&apos;clicking&apos;);
+          return Promise.resolve(nightmare.click(&apos;.signin.button-primary&apos;));
+        });
       }).then(() =&gt; {
         return Promise.resolve(nightmare.wait(500).exists(&apos;#message&apos;));
       }).then((finished) =&gt; {

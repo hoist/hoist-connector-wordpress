@@ -343,31 +343,31 @@ window.esdocSearchIndex = [
   ],
   [
     "",
-    "test-file/tests/integration_tests/auth_tests.js.html#lineNumber28",
+    "test-file/tests/integration_tests/auth_tests.js.html#lineNumber29",
     "authorization steps on first bounce",
     "test"
   ],
   [
     "",
-    "test-file/tests/integration_tests/auth_tests.js.html#lineNumber60",
+    "test-file/tests/integration_tests/auth_tests.js.html#lineNumber61",
     "authorization steps on first bounce should receive a redirect",
     "test"
   ],
   [
     "",
-    "test-file/tests/integration_tests/auth_tests.js.html#lineNumber57",
+    "test-file/tests/integration_tests/auth_tests.js.html#lineNumber58",
     "authorization steps on first bounce should save current step",
     "test"
   ],
   [
     "",
-    "test-file/tests/integration_tests/auth_tests.js.html#lineNumber64",
+    "test-file/tests/integration_tests/auth_tests.js.html#lineNumber65",
     "authorization steps on return from Wordpress",
     "test"
   ],
   [
     "",
-    "test-file/tests/integration_tests/auth_tests.js.html#lineNumber120",
+    "test-file/tests/integration_tests/auth_tests.js.html#lineNumber125",
     "authorization steps on return from Wordpress should save state",
     "test"
   ],
@@ -381,6 +381,24 @@ window.esdocSearchIndex = [
     "",
     "test-file/tests/unit_tests/settings_tests.js.html#lineNumber8",
     "default settings exposes defaultSettings method",
+    "test"
+  ],
+  [
+    "",
+    "test-file/tests/integration_tests/batch_tests.js.html#lineNumber7",
+    "get posts and comments",
+    "test"
+  ],
+  [
+    "",
+    "test-file/tests/integration_tests/batch_tests.js.html#lineNumber45",
+    "get posts and comments can extract latest comment",
+    "test"
+  ],
+  [
+    "",
+    "test-file/tests/integration_tests/batch_tests.js.html#lineNumber42",
+    "get posts and comments returns correct response",
     "test"
   ],
   [
@@ -513,6 +531,12 @@ window.esdocSearchIndex = [
     "tests/integration_tests/auth_tests.js",
     "test-file/tests/integration_tests/auth_tests.js.html",
     "tests/integration_tests/auth_tests.js",
+    "testFile"
+  ],
+  [
+    "tests/integration_tests/batch_tests.js",
+    "test-file/tests/integration_tests/batch_tests.js.html",
+    "tests/integration_tests/batch_tests.js",
     "testFile"
   ],
   [

@@ -29,7 +29,11 @@
     "getting_started": "./samples/gettingStarted.js"
   },
   "endpoints": {
-    "Event": {
+    "Comments": {
+      "subscribe": true,
+      "events": ["new"]
+    },
+    "Posts":{
       "subscribe": true,
       "events": ["new"]
     }
