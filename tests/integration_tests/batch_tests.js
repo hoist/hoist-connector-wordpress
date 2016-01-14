@@ -2,7 +2,7 @@ import WordpressConnector from '../../lib/connector';
 import config from 'config';
 import {expect} from 'chai';
 import moment from 'moment';
-describe.only('batch api', function () {
+describe('batch api', function () {
   this.timeout(5000);
   describe('get posts and comments', () => {
     let authorization;

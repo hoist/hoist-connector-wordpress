@@ -399,7 +399,7 @@
     "access": null,
     "description": null,
     "lineNumber": 1,
-    "content": "import WordpressConnector from './connector';\nimport logger from '@hoist/logger';\nimport Moment from 'moment'\nimport errors from '@hoist/errors';\nimport config from 'config';\nimport url from 'url';\nimport moment from 'moment';\n\nvar ConnectorRequiresAuthorizationError = errors.create({name: 'ConnectorRequiresAuthorizationError'});\n\nclass WordpressPoller {\n  constructor (context) {\n    this._logger = logger.child({cls: this.constructor.name, subscription: context.subscription._id, application: context.application._id});\n    this._context = context;\n    this._connector = new WordpressConnector(context.settings);\n  }\n  poll () {\n    return this.assertCanPoll().then(() => {\n      return this.pollForChanges();\n    }).then(() => {\n      this.context.subscription.delayTill(moment().add(5, 'minutes').toDate());\n    }).catch((err) => {\n      this._logger.error(err);\n      if (!(err instanceof ConnectorRequiresAuthorizationError)) {\n        this._logger.alert(err);\n      }\n    });\n  }\n  assertCanPoll () {\n    return Promise.resolve().then(() => {\n      this._logger.info('checking credentials');\n      if (!(this._context.authorization)) {\n        this._logger.warn('Connector needs auth and no auth set');\n        //we've already setup this subscription\n        this._context.subscription.delayTill(new Moment().add(1, 'hour').toDate());\n        throw new ConnectorRequiresAuthorizationError();\n      }\n      if (!this._context.authorization.get('SubscriptionProject')) {\n        this._logger.warn('Connector needs a subscription site and none set');\n        //we've already setup this subscription\n        this._context.subscription.delayTill(new Moment().add(1, 'hour').toDate());\n        throw new ConnectorRequiresAuthorizationError();\n      }\n    });\n  }\n  pollForChanges () {\n    return Promise.resolve().then(() => {\n      return Promise.all(this._context.subscription.endpoints.map((endpoint) => {\n        return this.generateUrlForEndpoint(endpoint);\n      }));\n    }).then((urls) => {\n      return this.batchRequest(urls.map(u => u.req)).then((result) => {\n        return Promise.all(this._context.subscription.endpoints.map((endpoint) => {\n          return this.saveResultForEndpoint(endpoint, urls, result);\n        }));\n      })\n    });\n  }\n  generateUrlForEndpoint (endpoint) {\n    return Promise.resolve().then(() => {\n      let urlObj = {\n        pathname: `/sites/${this._context.authorization.get('SubscriptionProject')}/${endpoint.toLoweCase()}`,\n        query: {}\n      };\n\n      let filterDate = this._context.subscription.get(endpoint).lastResultDate;\n      if (filterDate) {\n        urlObj.query.after = moment(filterDate).toISOString();\n      }\n      if (endpoint === 'Comments') {\n        urlObj.query.status = 'all';\n      }\n      return {endpoint: endpoint, req: url.format(urlObj)};\n    });\n  }\n  batchRequest (urls) {\n    return Promise.resolve(urls.join('&urls[]=')).then((urlQuery) => {\n      return this._connector.get(`/batch?urls[]=${urlQuery}`);\n    });\n  }\n  saveResultForEndpoint (endpoint, urls, result) {\n    return Promise.resolve().then(() => {\n      let url = urls.find((u) => u.endpoint === endpoint).req;\n      let resultsForEndpoint = result[url];\n      if (resultsForEndpoint.found === 0) {\n        return;\n      } else {\n        let documents = resultsForEndpoint[endpoint.toLoweCase()];\n        return Promise.all(documents.map((document) => this.raise(endpoint, document))).then(() => {\n          return documents.map((d) => moment(d.date)).sort().pop().toDate();\n        }).then((lastResultDate) => {\n          this._context.subscription.set(endpoint, {lastResultDate});\n        });\n      }\n    });\n  }\n  raise (endpoint, document) {\n    return Promise.resolve().then(() => {\n      return this.emit(`${this._context.connectorKey}:new:${endpoint.toLoweCase()}`);\n    });\n  }\n}\n\nexport default function (context, raiseMethod) {\n  let poller = new WordpressPoller(context);\n  poller.emit = raiseMethod;\n  return poller.poll();\n};\n"
+    "content": "import WordpressConnector from './connector';\nimport logger from '@hoist/logger';\nimport Moment from 'moment'\nimport errors from '@hoist/errors';\nimport config from 'config';\nimport url from 'url';\nimport moment from 'moment';\n\nvar ConnectorRequiresAuthorizationError = errors.create({name: 'ConnectorRequiresAuthorizationError'});\n\nclass WordpressPoller {\n  constructor (context) {\n    this._logger = logger.child({cls: this.constructor.name, subscription: context.subscription._id, application: context.application._id});\n    this._context = context;\n    this._connector = new WordpressConnector(context.settings);\n  }\n  poll () {\n    return this.assertCanPoll().then(() => {\n      return this.pollForChanges();\n    }).then(() => {\n      this._context.subscription.delayTill(moment().add(5, 'minutes').toDate());\n    }).catch((err) => {\n      this._logger.error(err);\n      if (!(err instanceof ConnectorRequiresAuthorizationError)) {\n        this._logger.alert(err);\n      }\n    });\n  }\n  assertCanPoll () {\n    return Promise.resolve().then(() => {\n      this._logger.info('checking credentials');\n      if (!(this._context.authorization)) {\n        this._logger.warn('Connector needs auth and no auth set');\n        //we've already setup this subscription\n        this._context.subscription.delayTill(new Moment().add(1, 'hour').toDate());\n        throw new ConnectorRequiresAuthorizationError();\n      }\n      if (!this._context.authorization.get('SubscriptionProject')) {\n        this._logger.warn('Connector needs a subscription site and none set');\n        //we've already setup this subscription\n        this._context.subscription.delayTill(new Moment().add(1, 'hour').toDate());\n        throw new ConnectorRequiresAuthorizationError();\n      }\n      this._connector.authorize(this._context.authorization);\n    });\n  }\n  pollForChanges () {\n    return Promise.resolve().then(() => {\n      return Promise.all(this._context.subscription.endpoints.map((endpoint) => {\n        return this.generateUrlForEndpoint(endpoint);\n      }));\n    }).then((urls) => {\n      return this.batchRequest(urls.map(u => u.req)).then((result) => {\n        return Promise.all(this._context.subscription.endpoints.map((endpoint) => {\n          return this.saveResultForEndpoint(endpoint, urls, result);\n        }));\n      })\n    });\n  }\n  generateUrlForEndpoint (endpoint) {\n    return Promise.resolve().then(() => {\n      let urlObj = {\n        pathname: `/sites/${this._context.authorization.get('SubscriptionProject')}/${endpoint.toLowerCase()}`,\n        query: {}\n      };\n\n      let filterDate = (this._context.subscription.get(endpoint) || {}).lastResultDate;\n      if (filterDate) {\n        urlObj.query.after = moment(filterDate).toISOString();\n      }\n      if (endpoint === 'Comments') {\n        urlObj.query.status = 'all';\n      }\n      return {endpoint: endpoint, req: url.format(urlObj)};\n    });\n  }\n  batchRequest (urls) {\n    return Promise.resolve(urls.join('&urls[]=')).then((urlQuery) => {\n      console.log(urlQuery);\n      return this._connector.get(`/batch?urls[]=${urlQuery}`);\n    });\n  }\n  saveResultForEndpoint (endpoint, urls, result) {\n    return Promise.resolve().then(() => {\n      let url = urls.find((u) => u.endpoint === endpoint).req;\n      let resultsForEndpoint = result[url];\n      if (resultsForEndpoint.found === 0) {\n        return;\n      } else {\n        let documents = resultsForEndpoint[endpoint.toLowerCase()];\n        return Promise.all(documents.map((document) => this.raise(endpoint, document))).then(() => {\n          return documents.map((d) => moment(d.date)).sort().pop().toDate();\n        }).then((lastResultDate) => {\n          this._context.subscription.set(endpoint, {lastResultDate});\n        });\n      }\n    });\n  }\n  raise (endpoint, document) {\n    return Promise.resolve().then(() => {\n      return this.emit(`${this._context.connectorKey}:new:${endpoint.toLowerCase()}`);\n    });\n  }\n}\n\nexport default function (context, raiseMethod) {\n  let poller = new WordpressPoller(context);\n  poller.emit = raiseMethod;\n  return poller.poll();\n};\n"
   },
   {
     "kind": "variable",
@@ -556,7 +556,7 @@
     "longname": "src/poll.js~WordpressPoller#pollForChanges",
     "access": null,
     "description": null,
-    "lineNumber": 46,
+    "lineNumber": 47,
     "undocument": true,
     "params": [],
     "return": {
@@ -575,7 +575,7 @@
     "longname": "src/poll.js~WordpressPoller#generateUrlForEndpoint",
     "access": null,
     "description": null,
-    "lineNumber": 59,
+    "lineNumber": 60,
     "undocument": true,
     "params": [
       {
@@ -601,7 +601,7 @@
     "longname": "src/poll.js~WordpressPoller#batchRequest",
     "access": null,
     "description": null,
-    "lineNumber": 76,
+    "lineNumber": 77,
     "undocument": true,
     "params": [
       {
@@ -627,7 +627,7 @@
     "longname": "src/poll.js~WordpressPoller#saveResultForEndpoint",
     "access": null,
     "description": null,
-    "lineNumber": 81,
+    "lineNumber": 83,
     "undocument": true,
     "params": [
       {
@@ -665,7 +665,7 @@
     "longname": "src/poll.js~WordpressPoller#raise",
     "access": null,
     "description": null,
-    "lineNumber": 97,
+    "lineNumber": 99,
     "undocument": true,
     "params": [
       {
@@ -700,7 +700,7 @@
     "importPath": "hoist-connector-wordpress/src/poll.js",
     "importStyle": "poll",
     "description": null,
-    "lineNumber": 104,
+    "lineNumber": 106,
     "undocument": true,
     "params": [
       {
@@ -1471,7 +1471,7 @@
     "access": null,
     "description": null,
     "lineNumber": 1,
-    "content": "import WordpressConnector from '../../lib/connector';\nimport config from 'config';\nimport {expect} from 'chai';\nimport moment from 'moment';\ndescribe.only('batch api', function () {\n  this.timeout(5000);\n  describe('get posts and comments', () => {\n    let authorization;\n    let _result;\n    let connector;\n    before(() => {\n      authorization = {\n        store: {},\n        get: function (key) {\n          return this.store[key];\n        },\n        delete: function (key) {\n          delete this.store[key];\n          return Promise.resolve(null);\n        },\n        set: function (key, value) {\n          this.store[key] = value;\n          return Promise.resolve(null);\n        },\n        redirect: function () {\n          console.log('redirect', arguments);\n          return Promise.resolve(null);\n        },\n        done: function () {\n          console.log('done', arguments);\n          return Promise.resolve(null);\n        }\n      };\n      connector = new WordpressConnector({clientId: config.get('clientId'), clientSecret: config.get('clientSecret')});\n      authorization.set('AccessToken', config.get('accessToken'));\n      connector.authorize(authorization)\n      return connector.get('/batch?urls[]=/sites/105230485/posts&urls[]=/sites/105230485/comments?status=all').then((result) => {\n        _result = result;\n      });\n\n    });\n    it('returns correct response', () => {\n      return expect(_result['/sites/105230485/posts'].found).to.be.greaterThan(0);\n    });\n    it('can extract latest comment', () => {\n      console.log(_result);\n      let dates = _result['/sites/105230485/comments?status=all'].comments.map((c) => moment(c.date)).sort().pop();\n      console.log(dates);\n    });\n  });\n});\n"
+    "content": "import WordpressConnector from '../../lib/connector';\nimport config from 'config';\nimport {expect} from 'chai';\nimport moment from 'moment';\ndescribe.only('batch api', function () {\n  this.timeout(5000);\n  describe('get posts and comments', () => {\n    let authorization;\n    let _result;\n    let connector;\n    before(() => {\n      authorization = {\n        store: {},\n        get: function (key) {\n          return this.store[key];\n        },\n        delete: function (key) {\n          delete this.store[key];\n          return Promise.resolve(null);\n        },\n        set: function (key, value) {\n          this.store[key] = value;\n          return Promise.resolve(null);\n        },\n        redirect: function () {\n          console.log('redirect', arguments);\n          return Promise.resolve(null);\n        },\n        done: function () {\n          console.log('done', arguments);\n          return Promise.resolve(null);\n        }\n      };\n      connector = new WordpressConnector({clientId: config.get('clientId'), clientSecret: config.get('clientSecret')});\n      authorization.set('AccessToken', config.get('accessToken'));\n      connector.authorize(authorization)\n      return connector.get('/batch?urls[]=%2Fsites%2F105230485%2Fcomments%3Fafter=2016-01-13T23%3A05%3A38%2E000Z%26status%3Dall&urls[]=%2Fsites%2F105230485%2Fposts%3Fafter%3D2016-01-13T23%3A03%3A34%2E000Z').then((result) => {\n        _result = result;\n      });\n\n    });\n    it('returns correct response', () => {\n      return expect(_result['/sites/105230485/posts'].found).to.be.greaterThan(0);\n    });\n    it('can extract latest comment', () => {\n      console.log(_result);\n      let dates = _result['/sites/105230485/comments?status=all'].comments.map((c) => moment(c.date)).sort().pop();\n      console.log(dates);\n    });\n  });\n});\n"
   },
   {
     "kind": "testDescribe",

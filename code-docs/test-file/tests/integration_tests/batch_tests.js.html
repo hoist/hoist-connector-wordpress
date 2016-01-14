@@ -95,7 +95,7 @@ describe.only(&apos;batch api&apos;, function () {
       connector = new WordpressConnector({clientId: config.get(&apos;clientId&apos;), clientSecret: config.get(&apos;clientSecret&apos;)});
       authorization.set(&apos;AccessToken&apos;, config.get(&apos;accessToken&apos;));
       connector.authorize(authorization)
-      return connector.get(&apos;/batch?urls[]=/sites/105230485/posts&amp;urls[]=/sites/105230485/comments?status=all&apos;).then((result) =&gt; {
+      return connector.get(&apos;/batch?urls[]=%2Fsites%2F105230485%2Fcomments%3Fafter=2016-01-13T23%3A05%3A38%2E000Z%26status%3Dall&amp;urls[]=%2Fsites%2F105230485%2Fposts%3Fafter%3D2016-01-13T23%3A03%3A34%2E000Z&apos;).then((result) =&gt; {
         _result = result;
       });
 

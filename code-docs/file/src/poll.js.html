@@ -79,7 +79,7 @@ class WordpressPoller {
     return this.assertCanPoll().then(() =&gt; {
       return this.pollForChanges();
     }).then(() =&gt; {
-      this.context.subscription.delayTill(moment().add(5, &apos;minutes&apos;).toDate());
+      this._context.subscription.delayTill(moment().add(5, &apos;minutes&apos;).toDate());
     }).catch((err) =&gt; {
       this._logger.error(err);
       if (!(err instanceof ConnectorRequiresAuthorizationError)) {
@@ -102,6 +102,7 @@ class WordpressPoller {
         this._context.subscription.delayTill(new Moment().add(1, &apos;hour&apos;).toDate());
         throw new ConnectorRequiresAuthorizationError();
       }
+      this._connector.authorize(this._context.authorization);
     });
   }
   pollForChanges () {
@@ -120,11 +121,11 @@ class WordpressPoller {
   generateUrlForEndpoint (endpoint) {
     return Promise.resolve().then(() =&gt; {
       let urlObj = {
-        pathname: `/sites/${this._context.authorization.get(&apos;SubscriptionProject&apos;)}/${endpoint.toLoweCase()}`,
+        pathname: `/sites/${this._context.authorization.get(&apos;SubscriptionProject&apos;)}/${endpoint.toLowerCase()}`,
         query: {}
       };
 
-      let filterDate = this._context.subscription.get(endpoint).lastResultDate;
+      let filterDate = (this._context.subscription.get(endpoint) || {}).lastResultDate;
       if (filterDate) {
         urlObj.query.after = moment(filterDate).toISOString();
       }
@@ -136,6 +137,7 @@ class WordpressPoller {
   }
   batchRequest (urls) {
     return Promise.resolve(urls.join(&apos;&amp;urls[]=&apos;)).then((urlQuery) =&gt; {
+      console.log(urlQuery);
       return this._connector.get(`/batch?urls[]=${urlQuery}`);
     });
   }
@@ -146,7 +148,7 @@ class WordpressPoller {
       if (resultsForEndpoint.found === 0) {
         return;
       } else {
-        let documents = resultsForEndpoint[endpoint.toLoweCase()];
+        let documents = resultsForEndpoint[endpoint.toLowerCase()];
         return Promise.all(documents.map((document) =&gt; this.raise(endpoint, document))).then(() =&gt; {
           return documents.map((d) =&gt; moment(d.date)).sort().pop().toDate();
         }).then((lastResultDate) =&gt; {
@@ -157,7 +159,7 @@ class WordpressPoller {
   }
   raise (endpoint, document) {
     return Promise.resolve().then(() =&gt; {
-      return this.emit(`${this._context.connectorKey}:new:${endpoint.toLoweCase()}`);
+      return this.emit(`${this._context.connectorKey}:new:${endpoint.toLowerCase()}`);
     });
   }
 }

@@ -18,7 +18,7 @@ class WordpressPoller {
     return this.assertCanPoll().then(() => {
       return this.pollForChanges();
     }).then(() => {
-      this.context.subscription.delayTill(moment().add(5, 'minutes').toDate());
+      this._context.subscription.delayTill(moment().add(5, 'minutes').toDate());
     }).catch((err) => {
       this._logger.error(err);
       if (!(err instanceof ConnectorRequiresAuthorizationError)) {
@@ -41,6 +41,7 @@ class WordpressPoller {
         this._context.subscription.delayTill(new Moment().add(1, 'hour').toDate());
         throw new ConnectorRequiresAuthorizationError();
       }
+      this._connector.authorize(this._context.authorization);
     });
   }
   pollForChanges () {
@@ -58,34 +59,40 @@ class WordpressPoller {
   }
   generateUrlForEndpoint (endpoint) {
     return Promise.resolve().then(() => {
-      let urlObj = {
-        pathname: `/sites/${this._context.authorization.get('SubscriptionProject')}/${endpoint.toLoweCase()}`,
-        query: {}
-      };
 
-      let filterDate = this._context.subscription.get(endpoint).lastResultDate;
+      let req = `/sites/${this._context.authorization.get('SubscriptionProject')}/${endpoint.toLowerCase()}`;
+      let query = '';
+      let filterDate = (this._context.subscription.get(endpoint) || {}).lastResultDate;
       if (filterDate) {
-        urlObj.query.after = moment(filterDate).toISOString();
+        query += `after=${moment(filterDate).toISOString()}`;
       }
       if (endpoint === 'Comments') {
-        urlObj.query.status = 'all';
+        if (query.length > 0) {
+          query += "&";
+        }
+        query += 'status=all';
       }
-      return {endpoint: endpoint, req: url.format(urlObj)};
+      if (query) {
+        req = `${req}?${query}`;
+      }
+      return {endpoint, req};
     });
   }
   batchRequest (urls) {
-    return Promise.resolve(urls.join('&urls[]=')).then((urlQuery) => {
+    return Promise.resolve(urls.map(req => encodeURIComponent(req)).join('&urls[]=')).then((urlQuery) => {
+      console.log(urlQuery);
       return this._connector.get(`/batch?urls[]=${urlQuery}`);
     });
   }
   saveResultForEndpoint (endpoint, urls, result) {
     return Promise.resolve().then(() => {
       let url = urls.find((u) => u.endpoint === endpoint).req;
+      console.log(result, url);
       let resultsForEndpoint = result[url];
-      if (resultsForEndpoint.found === 0) {
+      if (resultsForEndpoint.found < 1) {
         return;
       } else {
-        let documents = resultsForEndpoint[endpoint.toLoweCase()];
+        let documents = resultsForEndpoint[endpoint.toLowerCase()];
         return Promise.all(documents.map((document) => this.raise(endpoint, document))).then(() => {
           return documents.map((d) => moment(d.date)).sort().pop().toDate();
         }).then((lastResultDate) => {
@@ -96,7 +103,7 @@ class WordpressPoller {
   }
   raise (endpoint, document) {
     return Promise.resolve().then(() => {
-      return this.emit(`${this._context.connectorKey}:new:${endpoint.toLoweCase()}`);
+      return this.emit(`${this._context.connectorKey}:new:${endpoint.toLowerCase()}`);
     });
   }
 }
