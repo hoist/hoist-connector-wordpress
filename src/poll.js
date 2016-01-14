@@ -103,7 +103,7 @@ class WordpressPoller {
   }
   raise (endpoint, document) {
     return Promise.resolve().then(() => {
-      return this.emit(`${this._context.connectorKey}:new:${endpoint.toLowerCase()}`);
+      return this.emit(`${this._context.connectorKey}:new:${endpoint.toLowerCase()}`, document);
     });
   }
 }
