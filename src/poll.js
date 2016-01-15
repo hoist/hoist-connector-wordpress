@@ -90,14 +90,25 @@ class WordpressPoller {
       let url = urls.find((u) => u.endpoint === endpoint).req;
       console.log(result, url);
       let resultsForEndpoint = result[url];
-      if (resultsForEndpoint.found < 1) {
+      console.log(resultsForEndpoint);
+      let previousIdList = (this._context.subscription.get(endpoint) || {}).idList;
+      previousIdList = previousIdList || [];
+      let documents = resultsForEndpoint[endpoint.toLowerCase()].filter((document) => {
+        return previousIdList.every((id) => document.ID !== id);
+      });
+      if (documents.length < 1) {
         return;
       } else {
-        let documents = resultsForEndpoint[endpoint.toLowerCase()];
         return Promise.all(documents.map((document) => this.raise(endpoint, document))).then(() => {
           return documents.map((d) => moment(d.date)).sort().pop().toDate();
         }).then((lastResultDate) => {
-          this._context.subscription.set(endpoint, {lastResultDate});
+
+          return {
+            lastResultDate,
+            idList: previousIdList.concat(documents.map((document) => document.ID))
+          }
+        }).then((data) => {
+          this._context.subscription.set(endpoint, data);
         });
       }
     });

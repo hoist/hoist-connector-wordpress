@@ -373,6 +373,48 @@ window.esdocSearchIndex = [
   ],
   [
     "",
+    "test-file/tests/integration_tests/batch_tests.js.html#lineNumber5",
+    "batch api",
+    "test"
+  ],
+  [
+    "",
+    "test-file/tests/integration_tests/batch_tests.js.html#lineNumber7",
+    "batch api get posts and comments",
+    "test"
+  ],
+  [
+    "",
+    "test-file/tests/integration_tests/batch_tests.js.html#lineNumber45",
+    "batch api get posts and comments can extract latest comment",
+    "test"
+  ],
+  [
+    "",
+    "test-file/tests/integration_tests/batch_tests.js.html#lineNumber42",
+    "batch api get posts and comments returns correct response",
+    "test"
+  ],
+  [
+    "",
+    "test-file/tests/integration_tests/comments_tests.js.html#lineNumber4",
+    "comments api",
+    "test"
+  ],
+  [
+    "",
+    "test-file/tests/integration_tests/comments_tests.js.html#lineNumber7",
+    "comments api get comments",
+    "test"
+  ],
+  [
+    "",
+    "test-file/tests/integration_tests/comments_tests.js.html#lineNumber42",
+    "comments api get comments returns correct response",
+    "test"
+  ],
+  [
+    "",
     "test-file/tests/unit_tests/settings_tests.js.html#lineNumber6",
     "default settings",
     "test"
@@ -381,24 +423,6 @@ window.esdocSearchIndex = [
     "",
     "test-file/tests/unit_tests/settings_tests.js.html#lineNumber8",
     "default settings exposes defaultSettings method",
-    "test"
-  ],
-  [
-    "",
-    "test-file/tests/integration_tests/batch_tests.js.html#lineNumber7",
-    "get posts and comments",
-    "test"
-  ],
-  [
-    "",
-    "test-file/tests/integration_tests/batch_tests.js.html#lineNumber45",
-    "get posts and comments can extract latest comment",
-    "test"
-  ],
-  [
-    "",
-    "test-file/tests/integration_tests/batch_tests.js.html#lineNumber42",
-    "get posts and comments returns correct response",
     "test"
   ],
   [
@@ -537,6 +561,12 @@ window.esdocSearchIndex = [
     "tests/integration_tests/batch_tests.js",
     "test-file/tests/integration_tests/batch_tests.js.html",
     "tests/integration_tests/batch_tests.js",
+    "testFile"
+  ],
+  [
+    "tests/integration_tests/comments_tests.js",
+    "test-file/tests/integration_tests/comments_tests.js.html",
+    "tests/integration_tests/comments_tests.js",
     "testFile"
   ],
   [
