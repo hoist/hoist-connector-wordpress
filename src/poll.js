@@ -18,12 +18,13 @@ class WordpressPoller {
     return this.assertCanPoll().then(() => {
       return this.pollForChanges();
     }).then(() => {
-      this._context.subscription.delayTill(moment().add(5, 'minutes').toDate());
+      this._context.subscription.delayTill(moment().add(1, 'minutes').toDate());
     }).catch((err) => {
       this._logger.error(err);
       if (!(err instanceof ConnectorRequiresAuthorizationError)) {
         this._logger.alert(err);
       }
+      this._context.subscription.delayTill(moment().add(1, 'minutes').toDate());
     });
   }
   assertCanPoll () {
