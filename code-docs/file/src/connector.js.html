@@ -95,25 +95,25 @@ export default class WordpressConnector extends OAuth2ConnectorBase {
   get (path) {
     let uri = `${apiBaseUri}${path}`;
     return this._performRequest(&apos;GET&apos;, uri).then((result) =&gt; {
-      return JSON.parse(result[0]);
+      return JSON.parse(result);
     });
   }
   post (path, body) {
     let uri = `${apiBaseUri}${path}`;
     return this._performRequest(&apos;POST&apos;, uri, body).then((result) =&gt; {
-      return JSON.parse(result[0]);
+      return JSON.parse(result);
     });
   }
   put (path, body) {
     let uri = `${apiBaseUri}${path}`;
     return this._performRequest(&apos;PUT&apos;, uri, body).then((result) =&gt; {
-      return JSON.parse(result[0]);
+      return JSON.parse(result);
     });
   }
   patch (path, body) {
     let uri = `${apiBaseUri}${path}`;
     return this._performRequest(&apos;PATCH&apos;, uri, body).then((result) =&gt; {
-      return JSON.parse(result[0]);
+      return JSON.parse(result);
     });
   }
   delete (path) {
