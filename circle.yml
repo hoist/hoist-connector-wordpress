@@ -4,7 +4,7 @@ machine:
   services:
     - docker
   node:
-    version: iojs-v1.8
+    version: 4
 checkout:
   post:
     - git fetch --unshallow 2>/dev/null || true

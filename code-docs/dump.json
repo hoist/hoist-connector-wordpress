@@ -1,5 +1,6 @@
 [
   {
+    "__docId__": 0,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -12,6 +13,7 @@
     "content": "import {OAuth2ConnectorBase} from '@hoist/oauth-connector';\nimport {merge} from 'lodash';\n\nlet overrides = {\n  baseSite: 'https://public-api.wordpress.com',\n  accessTokenPath: '/oauth2/token',\n  authorizationPath: '/oauth2/authorize'\n};\nlet apiBaseUri = 'https://public-api.wordpress.com/rest/v1.1'\n/**\n   * A Hoist Connector for connecting to GitLab\n   * @extends {OAuth2ConnectorBase}\n   */\nexport default class WordpressConnector extends OAuth2ConnectorBase {\n\n  /**\n   * create a new connector\n   * @param {object} configuration - the configuration properties to use\n   * @param {string} configuration.clientId - the OAuth2 client id\n   * @param {string} configuration.clientSecret - the OAuth2 client secret\n   */\n  constructor (configuration) {\n    super(merge({}, configuration, overrides));\n    this._clientId = configuration.clientId;\n    this._configuration = configuration;\n  }\n\n  /**\n   * @private\n   * @param AuthorizationStore authorization the users authorisation store\n   * @returns Promise<object> an object containing key value pairs to send with the client to the authorization url\n   */\n  _authorizeParams (authorization) {\n    return super._authorizeParams(authorization).then((params) => {\n      params.response_type = \"code\";\n      params.scope = 'global';\n      return params;\n    });\n  }\n  //use authorization params as it has redirect uri\n  _accessParams (authorization) {\n    return super._authorizeParams(authorization).then((params) => {\n      return params || {};\n    }).then((params) => {\n      params.grant_type = \"authorization_code\"\n      return params;\n    });\n  }\n  static defaultSettings () {\n    return Promise.resolve({});\n  }\n\n  get (path) {\n    let uri = `${apiBaseUri}${path}`;\n    return this._performRequest('GET', uri).then((result) => {\n      return JSON.parse(result[0]);\n    });\n  }\n  post (path, body) {\n    let uri = `${apiBaseUri}${path}`;\n    return this._performRequest('POST', uri, body).then((result) => {\n      return JSON.parse(result[0]);\n    });\n  }\n  put (path, body) {\n    let uri = `${apiBaseUri}${path}`;\n    return this._performRequest('PUT', uri, body).then((result) => {\n      return JSON.parse(result[0]);\n    });\n  }\n  patch (path, body) {\n    let uri = `${apiBaseUri}${path}`;\n    return this._performRequest('PATCH', uri, body).then((result) => {\n      return JSON.parse(result[0]);\n    });\n  }\n  delete (path) {\n    let uri = `${apiBaseUri}${path}`;\n    return this._performRequest('DELETE', uri).then((result) => {\n      return JSON.parse(result[0]);\n    });\n  }\n}\n\n/**\n * @external {OAuth2ConnectorBase} https://doc.esdoc.org/github.com/hoist/oauth-connector/class/src/oauth2_connector.js~OAuth2ConnectorBase.html\n */\n"
   },
   {
+    "__docId__": 1,
     "kind": "variable",
     "static": true,
     "variation": null,
@@ -32,6 +34,7 @@
     }
   },
   {
+    "__docId__": 2,
     "kind": "variable",
     "static": true,
     "variation": null,
@@ -52,6 +55,7 @@
     }
   },
   {
+    "__docId__": 3,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -70,6 +74,7 @@
     ]
   },
   {
+    "__docId__": 4,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -78,9 +83,10 @@
     "memberof": "src/connector.js",
     "longname": "src/connector.js~OAuth2ConnectorBase",
     "access": null,
-    "description": null
+    "description": ""
   },
   {
+    "__docId__": 5,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -125,6 +131,7 @@
     "generator": false
   },
   {
+    "__docId__": 6,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -142,6 +149,7 @@
     }
   },
   {
+    "__docId__": 7,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -159,6 +167,7 @@
     }
   },
   {
+    "__docId__": 8,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -166,7 +175,7 @@
     "memberof": "src/connector.js~WordpressConnector",
     "longname": "src/connector.js~WordpressConnector#_authorizeParams",
     "access": "private",
-    "description": null,
+    "description": "",
     "lineNumber": 33,
     "unknown": [
       {
@@ -197,6 +206,7 @@
     "generator": false
   },
   {
+    "__docId__": 9,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -223,6 +233,7 @@
     "generator": false
   },
   {
+    "__docId__": 10,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -242,6 +253,7 @@
     "generator": false
   },
   {
+    "__docId__": 11,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -268,6 +280,7 @@
     "generator": false
   },
   {
+    "__docId__": 12,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -300,6 +313,7 @@
     "generator": false
   },
   {
+    "__docId__": 13,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -332,6 +346,7 @@
     "generator": false
   },
   {
+    "__docId__": 14,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -364,6 +379,7 @@
     "generator": false
   },
   {
+    "__docId__": 15,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -390,6 +406,7 @@
     "generator": false
   },
   {
+    "__docId__": 16,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -402,6 +419,7 @@
     "content": "import WordpressConnector from './connector';\nimport logger from '@hoist/logger';\nimport Moment from 'moment'\nimport errors from '@hoist/errors';\nimport config from 'config';\nimport url from 'url';\nimport moment from 'moment';\n\nvar ConnectorRequiresAuthorizationError = errors.create({name: 'ConnectorRequiresAuthorizationError'});\n\nclass WordpressPoller {\n  constructor (context) {\n    this._logger = logger.child({cls: this.constructor.name, subscription: context.subscription._id, application: context.application._id});\n    this._context = context;\n    this._connector = new WordpressConnector(context.settings);\n  }\n  poll () {\n    return this.assertCanPoll().then(() => {\n      return this.pollForChanges();\n    }).then(() => {\n      this._context.subscription.delayTill(moment().add(1, 'minutes').toDate());\n    }).catch((err) => {\n      this._logger.error(err);\n      if (!(err instanceof ConnectorRequiresAuthorizationError)) {\n        this._logger.alert(err);\n      }\n      this._context.subscription.delayTill(moment().add(1, 'minutes').toDate());\n    });\n  }\n  assertCanPoll () {\n    return Promise.resolve().then(() => {\n      this._logger.info('checking credentials');\n      if (!(this._context.authorization)) {\n        this._logger.warn('Connector needs auth and no auth set');\n        //we've already setup this subscription\n        this._context.subscription.delayTill(new Moment().add(1, 'hour').toDate());\n        throw new ConnectorRequiresAuthorizationError();\n      }\n      if (!this._context.authorization.get('SubscriptionProject')) {\n        this._logger.warn('Connector needs a subscription site and none set');\n        //we've already setup this subscription\n        this._context.subscription.delayTill(new Moment().add(1, 'hour').toDate());\n        throw new ConnectorRequiresAuthorizationError();\n      }\n      this._connector.authorize(this._context.authorization);\n    });\n  }\n  pollForChanges () {\n    return Promise.resolve().then(() => {\n      return Promise.all(this._context.subscription.endpoints.map((endpoint) => {\n        return this.generateUrlForEndpoint(endpoint);\n      }));\n    }).then((urls) => {\n      return this.batchRequest(urls.map(u => u.req)).then((result) => {\n        return Promise.all(this._context.subscription.endpoints.map((endpoint) => {\n          return this.saveResultForEndpoint(endpoint, urls, result);\n        }));\n      })\n    });\n  }\n  generateUrlForEndpoint (endpoint) {\n    return Promise.resolve().then(() => {\n\n      let req = `/sites/${this._context.authorization.get('SubscriptionProject')}/${endpoint.toLowerCase()}`;\n      let query = '';\n      let filterDate = (this._context.subscription.get(endpoint) || {}).lastResultDate;\n      if (filterDate) {\n        query += `after=${moment(filterDate).toISOString()}`;\n      }\n      if (endpoint === 'Comments') {\n        if (query.length > 0) {\n          query += \"&\";\n        }\n        query += 'status=all';\n      }\n      if (query) {\n        req = `${req}?${query}`;\n      }\n      return {endpoint, req};\n    });\n  }\n  batchRequest (urls) {\n    return Promise.resolve(urls.map(req => encodeURIComponent(req)).join('&urls[]=')).then((urlQuery) => {\n      console.log(urlQuery);\n      return this._connector.get(`/batch?urls[]=${urlQuery}`);\n    });\n  }\n  saveResultForEndpoint (endpoint, urls, result) {\n    return Promise.resolve().then(() => {\n      let url = urls.find((u) => u.endpoint === endpoint).req;\n      console.log(result, url);\n      let resultsForEndpoint = result[url];\n      console.log(resultsForEndpoint);\n      let previousIdList = (this._context.subscription.get(endpoint) || {}).idList;\n      previousIdList = previousIdList || [];\n      let documents = resultsForEndpoint[endpoint.toLowerCase()].filter((document) => {\n        return previousIdList.every((id) => document.ID !== id);\n      });\n      if (documents.length < 1) {\n        return;\n      } else {\n        return Promise.all(documents.map((document) => this.raise(endpoint, document))).then(() => {\n          return documents.map((d) => moment(d.date)).sort().pop().toDate();\n        }).then((lastResultDate) => {\n\n          return {\n            lastResultDate,\n            idList: previousIdList.concat(documents.map((document) => document.ID))\n          }\n        }).then((data) => {\n          this._context.subscription.set(endpoint, data);\n        });\n      }\n    });\n  }\n  raise (endpoint, document) {\n    return Promise.resolve().then(() => {\n      return this.emit(`${this._context.connectorKey}:new:${endpoint.toLowerCase()}`, document);\n    });\n  }\n}\n\nexport default function (context, raiseMethod) {\n  let poller = new WordpressPoller(context);\n  poller.emit = raiseMethod;\n  return poller.poll();\n};\n"
   },
   {
+    "__docId__": 17,
     "kind": "variable",
     "static": true,
     "variation": null,
@@ -422,6 +440,7 @@
     }
   },
   {
+    "__docId__": 18,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -438,6 +457,7 @@
     "interface": false
   },
   {
+    "__docId__": 19,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -459,6 +479,7 @@
     "generator": false
   },
   {
+    "__docId__": 20,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -476,6 +497,7 @@
     }
   },
   {
+    "__docId__": 21,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -493,6 +515,7 @@
     }
   },
   {
+    "__docId__": 22,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -510,6 +533,7 @@
     }
   },
   {
+    "__docId__": 23,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -529,6 +553,7 @@
     "generator": false
   },
   {
+    "__docId__": 24,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -548,6 +573,7 @@
     "generator": false
   },
   {
+    "__docId__": 25,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -567,6 +593,7 @@
     "generator": false
   },
   {
+    "__docId__": 26,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -593,6 +620,7 @@
     "generator": false
   },
   {
+    "__docId__": 27,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -619,6 +647,7 @@
     "generator": false
   },
   {
+    "__docId__": 28,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -657,6 +686,7 @@
     "generator": false
   },
   {
+    "__docId__": 29,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -689,6 +719,7 @@
     "generator": false
   },
   {
+    "__docId__": 30,
     "kind": "function",
     "static": true,
     "variation": null,
@@ -724,6 +755,7 @@
     "generator": false
   },
   {
+    "__docId__": 32,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -732,10 +764,11 @@
     "memberof": "BuiltinExternal/ECMAScriptExternal.js",
     "longname": "BuiltinExternal/ECMAScriptExternal.js~Infinity",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 33,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -744,10 +777,11 @@
     "memberof": "BuiltinExternal/ECMAScriptExternal.js",
     "longname": "BuiltinExternal/ECMAScriptExternal.js~NaN",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 34,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -756,10 +790,11 @@
     "memberof": "BuiltinExternal/ECMAScriptExternal.js",
     "longname": "BuiltinExternal/ECMAScriptExternal.js~undefined",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 35,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -768,10 +803,11 @@
     "memberof": "BuiltinExternal/ECMAScriptExternal.js",
     "longname": "BuiltinExternal/ECMAScriptExternal.js~null",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 36,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -780,10 +816,11 @@
     "memberof": "BuiltinExternal/ECMAScriptExternal.js",
     "longname": "BuiltinExternal/ECMAScriptExternal.js~Object",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 37,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -792,10 +829,11 @@
     "memberof": "BuiltinExternal/ECMAScriptExternal.js",
     "longname": "BuiltinExternal/ECMAScriptExternal.js~object",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 38,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -804,10 +842,11 @@
     "memberof": "BuiltinExternal/ECMAScriptExternal.js",
     "longname": "BuiltinExternal/ECMAScriptExternal.js~Function",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 39,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -816,10 +855,11 @@
     "memberof": "BuiltinExternal/ECMAScriptExternal.js",
     "longname": "BuiltinExternal/ECMAScriptExternal.js~function",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 40,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -828,10 +868,11 @@
     "memberof": "BuiltinExternal/ECMAScriptExternal.js",
     "longname": "BuiltinExternal/ECMAScriptExternal.js~Boolean",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 41,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -840,10 +881,11 @@
     "memberof": "BuiltinExternal/ECMAScriptExternal.js",
     "longname": "BuiltinExternal/ECMAScriptExternal.js~boolean",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 42,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -852,10 +894,11 @@
     "memberof": "BuiltinExternal/ECMAScriptExternal.js",
     "longname": "BuiltinExternal/ECMAScriptExternal.js~Symbol",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 43,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -864,10 +907,11 @@
     "memberof": "BuiltinExternal/ECMAScriptExternal.js",
     "longname": "BuiltinExternal/ECMAScriptExternal.js~Error",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 44,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -876,10 +920,11 @@
     "memberof": "BuiltinExternal/ECMAScriptExternal.js",
     "longname": "BuiltinExternal/ECMAScriptExternal.js~EvalError",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 45,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -888,10 +933,11 @@
     "memberof": "BuiltinExternal/ECMAScriptExternal.js",
     "longname": "BuiltinExternal/ECMAScriptExternal.js~InternalError",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 46,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -900,10 +946,11 @@
     "memberof": "BuiltinExternal/ECMAScriptExternal.js",
     "longname": "BuiltinExternal/ECMAScriptExternal.js~RangeError",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 47,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -912,10 +959,11 @@
     "memberof": "BuiltinExternal/ECMAScriptExternal.js",
     "longname": "BuiltinExternal/ECMAScriptExternal.js~ReferenceError",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 48,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -924,10 +972,11 @@
     "memberof": "BuiltinExternal/ECMAScriptExternal.js",
     "longname": "BuiltinExternal/ECMAScriptExternal.js~SyntaxError",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 49,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -936,10 +985,11 @@
     "memberof": "BuiltinExternal/ECMAScriptExternal.js",
     "longname": "BuiltinExternal/ECMAScriptExternal.js~TypeError",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 50,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -948,10 +998,11 @@
     "memberof": "BuiltinExternal/ECMAScriptExternal.js",
     "longname": "BuiltinExternal/ECMAScriptExternal.js~URIError",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 51,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -960,10 +1011,11 @@
     "memberof": "BuiltinExternal/ECMAScriptExternal.js",
     "longname": "BuiltinExternal/ECMAScriptExternal.js~Number",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 52,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -972,10 +1024,11 @@
     "memberof": "BuiltinExternal/ECMAScriptExternal.js",
     "longname": "BuiltinExternal/ECMAScriptExternal.js~number",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 53,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -984,10 +1037,11 @@
     "memberof": "BuiltinExternal/ECMAScriptExternal.js",
     "longname": "BuiltinExternal/ECMAScriptExternal.js~Date",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 54,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -996,10 +1050,11 @@
     "memberof": "BuiltinExternal/ECMAScriptExternal.js",
     "longname": "BuiltinExternal/ECMAScriptExternal.js~String",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 55,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1008,10 +1063,11 @@
     "memberof": "BuiltinExternal/ECMAScriptExternal.js",
     "longname": "BuiltinExternal/ECMAScriptExternal.js~string",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 56,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1020,10 +1076,11 @@
     "memberof": "BuiltinExternal/ECMAScriptExternal.js",
     "longname": "BuiltinExternal/ECMAScriptExternal.js~RegExp",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 57,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1032,10 +1089,11 @@
     "memberof": "BuiltinExternal/ECMAScriptExternal.js",
     "longname": "BuiltinExternal/ECMAScriptExternal.js~Array",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 58,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1044,10 +1102,11 @@
     "memberof": "BuiltinExternal/ECMAScriptExternal.js",
     "longname": "BuiltinExternal/ECMAScriptExternal.js~Int8Array",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 59,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1056,10 +1115,11 @@
     "memberof": "BuiltinExternal/ECMAScriptExternal.js",
     "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint8Array",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 60,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1068,10 +1128,11 @@
     "memberof": "BuiltinExternal/ECMAScriptExternal.js",
     "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint8ClampedArray",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 61,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1080,10 +1141,11 @@
     "memberof": "BuiltinExternal/ECMAScriptExternal.js",
     "longname": "BuiltinExternal/ECMAScriptExternal.js~Int16Array",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 62,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1092,10 +1154,11 @@
     "memberof": "BuiltinExternal/ECMAScriptExternal.js",
     "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint16Array",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 63,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1104,10 +1167,11 @@
     "memberof": "BuiltinExternal/ECMAScriptExternal.js",
     "longname": "BuiltinExternal/ECMAScriptExternal.js~Int32Array",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 64,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1116,10 +1180,11 @@
     "memberof": "BuiltinExternal/ECMAScriptExternal.js",
     "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint32Array",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 65,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1128,10 +1193,11 @@
     "memberof": "BuiltinExternal/ECMAScriptExternal.js",
     "longname": "BuiltinExternal/ECMAScriptExternal.js~Float32Array",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 66,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1140,10 +1206,11 @@
     "memberof": "BuiltinExternal/ECMAScriptExternal.js",
     "longname": "BuiltinExternal/ECMAScriptExternal.js~Float64Array",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 67,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1152,10 +1219,11 @@
     "memberof": "BuiltinExternal/ECMAScriptExternal.js",
     "longname": "BuiltinExternal/ECMAScriptExternal.js~Map",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 68,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1164,10 +1232,11 @@
     "memberof": "BuiltinExternal/ECMAScriptExternal.js",
     "longname": "BuiltinExternal/ECMAScriptExternal.js~Set",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 69,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1176,10 +1245,11 @@
     "memberof": "BuiltinExternal/ECMAScriptExternal.js",
     "longname": "BuiltinExternal/ECMAScriptExternal.js~WeakMap",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 70,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1188,10 +1258,11 @@
     "memberof": "BuiltinExternal/ECMAScriptExternal.js",
     "longname": "BuiltinExternal/ECMAScriptExternal.js~WeakSet",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 71,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1200,10 +1271,11 @@
     "memberof": "BuiltinExternal/ECMAScriptExternal.js",
     "longname": "BuiltinExternal/ECMAScriptExternal.js~ArrayBuffer",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 72,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1212,10 +1284,11 @@
     "memberof": "BuiltinExternal/ECMAScriptExternal.js",
     "longname": "BuiltinExternal/ECMAScriptExternal.js~DataView",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 73,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1224,10 +1297,11 @@
     "memberof": "BuiltinExternal/ECMAScriptExternal.js",
     "longname": "BuiltinExternal/ECMAScriptExternal.js~JSON",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 74,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1236,10 +1310,11 @@
     "memberof": "BuiltinExternal/ECMAScriptExternal.js",
     "longname": "BuiltinExternal/ECMAScriptExternal.js~Promise",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 75,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1248,10 +1323,11 @@
     "memberof": "BuiltinExternal/ECMAScriptExternal.js",
     "longname": "BuiltinExternal/ECMAScriptExternal.js~Generator",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 76,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1260,10 +1336,11 @@
     "memberof": "BuiltinExternal/ECMAScriptExternal.js",
     "longname": "BuiltinExternal/ECMAScriptExternal.js~GeneratorFunction",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 77,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1272,10 +1349,11 @@
     "memberof": "BuiltinExternal/ECMAScriptExternal.js",
     "longname": "BuiltinExternal/ECMAScriptExternal.js~Reflect",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 78,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1284,10 +1362,11 @@
     "memberof": "BuiltinExternal/ECMAScriptExternal.js",
     "longname": "BuiltinExternal/ECMAScriptExternal.js~Proxy",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 80,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1296,10 +1375,11 @@
     "memberof": "BuiltinExternal/WebAPIExternal.js",
     "longname": "BuiltinExternal/WebAPIExternal.js~CanvasRenderingContext2D",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 81,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1308,10 +1388,11 @@
     "memberof": "BuiltinExternal/WebAPIExternal.js",
     "longname": "BuiltinExternal/WebAPIExternal.js~DocumentFragment",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 82,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1320,10 +1401,11 @@
     "memberof": "BuiltinExternal/WebAPIExternal.js",
     "longname": "BuiltinExternal/WebAPIExternal.js~Element",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 83,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1332,10 +1414,11 @@
     "memberof": "BuiltinExternal/WebAPIExternal.js",
     "longname": "BuiltinExternal/WebAPIExternal.js~Event",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 84,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1344,10 +1427,11 @@
     "memberof": "BuiltinExternal/WebAPIExternal.js",
     "longname": "BuiltinExternal/WebAPIExternal.js~Node",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 85,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1356,10 +1440,11 @@
     "memberof": "BuiltinExternal/WebAPIExternal.js",
     "longname": "BuiltinExternal/WebAPIExternal.js~NodeList",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 86,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1368,10 +1453,24 @@
     "memberof": "BuiltinExternal/WebAPIExternal.js",
     "longname": "BuiltinExternal/WebAPIExternal.js~XMLHttpRequest",
     "access": null,
-    "description": null,
+    "description": "",
     "builtinExternal": true
   },
   {
+    "__docId__": 87,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "AudioContext",
+    "externalLink": "https://developer.mozilla.org/en/docs/Web/API/AudioContext",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~AudioContext",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 88,
     "kind": "testFile",
     "static": true,
     "variation": null,
@@ -1384,6 +1483,7 @@
     "content": "import WordpressConnector from '../../lib/connector';\nimport sinon from 'sinon';\nimport config from 'config';\nimport {expect} from 'chai';\nimport Nightmare from 'nightmare';\nimport url from 'url';\nimport os from 'os';\n\nlet osType = os.type();\ndescribe('authorization steps', function () {\n  let connector;\n  let clientId = config.get('clientId');\n  let clientSecret = config.get('clientSecret');\n  let nightmare;\n\n  before(function () {\n    if (osType !== 'Linux') {\n      nightmare = Nightmare({\n        show: true\n      });\n    }\n    connector = new WordpressConnector({clientId, clientSecret});\n  });\n  after(function () {\n    if (osType !== 'Linux') {\n      return nightmare.end();\n    }\n  })\n  describe('on first bounce', () => {\n    let bounce;\n    before(function () {\n\n      bounce = {\n        get: function () {\n          return undefined;\n        },\n        delete: function () {\n          return Promise.resolve(null);\n        },\n        set: function () {\n          console.log('set', arguments);\n          return Promise.resolve(null);\n        },\n        redirect: function () {\n          console.log('redirect', arguments);\n          return Promise.resolve(null);\n        },\n        done: function () {\n          console.log('done', arguments);\n          return Promise.resolve(null);\n        }\n      };\n      sinon.spy(bounce, 'get');\n      sinon.spy(bounce, 'set');\n      sinon.spy(bounce, 'redirect');\n      return connector.receiveBounce(bounce);\n    });\n    it('should save current step', () => {\n      return expect(bounce.set).to.have.been.calledWith('currentStep', 'authorization');\n    });\n    it('should receive a redirect', () => {\n      return expect(bounce.redirect).to.have.been.calledWith(`https://public-api.wordpress.com/oauth2/authorize?redirect_uri=https%3A%2F%2Fbouncer.hoist.test%2Fbounce&response_type=code&scope=global&client_id=${clientId}`);\n    });\n  });\n  describe('on return from Wordpress', function () {\n    let bounce;\n    this.timeout(50000);\n    let uri;\n\n    before(function () {\n      if (osType === 'Linux') {\n        this.skip();\n      }\n      bounce = {\n        store: {},\n        get: function (key) {\n          return this.store[key];\n        },\n        delete: function (key) {\n          delete this.store[key];\n          return Promise.resolve(null);\n        },\n        set: function (key, value) {\n          this.store[key] = value;\n          return Promise.resolve(null);\n        },\n        redirect: function () {\n          console.log('redirect', arguments);\n          return Promise.resolve(null);\n        },\n        done: function () {\n          console.log('done', arguments);\n          return Promise.resolve(null);\n        }\n      };\n      sinon.spy(bounce, 'get');\n      sinon.spy(bounce, 'set');\n      sinon.spy(bounce, 'redirect');\n      return Promise.resolve(connector.receiveBounce(bounce)).then(function () {\n        let authorizeUri = bounce.redirect.getCall(0).args[0];\n        return Promise.resolve(nightmare.goto(authorizeUri));\n      }).then(() => {\n        console.log('typing');\n        return Promise.resolve(nightmare.type('#username', config.get('username')).type('#password', config.get('password'))).then(() => {\n          console.log('clicking');\n          return Promise.resolve(nightmare.click('.signin.button-primary'));\n        });\n      }).then(() => {\n        return Promise.resolve(nightmare.wait(500).exists('#message'));\n      }).then((finished) => {\n        if (finished) {\n          Promise.resolve(nightmare.url())\n        } else {\n          return Promise.resolve(nightmare.click('.button-primary.approve').wait('#message').url());\n        }\n      }).then((u) => {\n        console.log(u);\n        uri = url.parse(u, true);\n        bounce.query = uri.query;\n      }).then(() => {\n        return connector.receiveBounce(bounce);\n      });\n\n    });\n    it('should save state', () => {\n      console.log(bounce.store);\n      return expect(bounce.store['AccessToken']).to.exist;\n    });\n  })\n});\n"
   },
   {
+    "__docId__": 89,
     "kind": "testDescribe",
     "static": true,
     "variation": null,
@@ -1397,6 +1497,7 @@
     "lineNumber": 10
   },
   {
+    "__docId__": 90,
     "kind": "testDescribe",
     "static": true,
     "variation": null,
@@ -1410,6 +1511,7 @@
     "lineNumber": 29
   },
   {
+    "__docId__": 91,
     "kind": "testIt",
     "static": true,
     "variation": null,
@@ -1423,6 +1525,7 @@
     "lineNumber": 58
   },
   {
+    "__docId__": 92,
     "kind": "testIt",
     "static": true,
     "variation": null,
@@ -1436,6 +1539,7 @@
     "lineNumber": 61
   },
   {
+    "__docId__": 93,
     "kind": "testDescribe",
     "static": true,
     "variation": null,
@@ -1449,6 +1553,7 @@
     "lineNumber": 65
   },
   {
+    "__docId__": 94,
     "kind": "testIt",
     "static": true,
     "variation": null,
@@ -1462,6 +1567,7 @@
     "lineNumber": 125
   },
   {
+    "__docId__": 95,
     "kind": "testFile",
     "static": true,
     "variation": null,
@@ -1474,6 +1580,7 @@
     "content": "import WordpressConnector from '../../lib/connector';\nimport config from 'config';\nimport {expect} from 'chai';\nimport moment from 'moment';\ndescribe('batch api', function () {\n  this.timeout(5000);\n  describe('get posts and comments', () => {\n    let authorization;\n    let _result;\n    let connector;\n    before(() => {\n      authorization = {\n        store: {},\n        get: function (key) {\n          return this.store[key];\n        },\n        delete: function (key) {\n          delete this.store[key];\n          return Promise.resolve(null);\n        },\n        set: function (key, value) {\n          this.store[key] = value;\n          return Promise.resolve(null);\n        },\n        redirect: function () {\n          console.log('redirect', arguments);\n          return Promise.resolve(null);\n        },\n        done: function () {\n          console.log('done', arguments);\n          return Promise.resolve(null);\n        }\n      };\n      connector = new WordpressConnector({clientId: config.get('clientId'), clientSecret: config.get('clientSecret')});\n      authorization.set('AccessToken', config.get('accessToken'));\n      connector.authorize(authorization)\n      return connector.get('/batch?urls[]=/sites/105230485/posts&urls[]=/sites/105230485/comments?status=all').then((result) => {\n        _result = result;\n      });\n\n    });\n    it('returns correct response', () => {\n      return expect(_result['/sites/105230485/posts'].found).to.be.greaterThan(0);\n    });\n    it('can extract latest comment', () => {\n      console.log(_result);\n      let dates = _result['/sites/105230485/comments?status=all'].comments.map((c) => moment(c.date)).sort().pop();\n      console.log(dates);\n    });\n  });\n});\n"
   },
   {
+    "__docId__": 96,
     "kind": "testDescribe",
     "static": true,
     "variation": null,
@@ -1487,6 +1594,7 @@
     "lineNumber": 5
   },
   {
+    "__docId__": 97,
     "kind": "testDescribe",
     "static": true,
     "variation": null,
@@ -1500,6 +1608,7 @@
     "lineNumber": 7
   },
   {
+    "__docId__": 98,
     "kind": "testIt",
     "static": true,
     "variation": null,
@@ -1513,6 +1622,7 @@
     "lineNumber": 42
   },
   {
+    "__docId__": 99,
     "kind": "testIt",
     "static": true,
     "variation": null,
@@ -1526,6 +1636,7 @@
     "lineNumber": 45
   },
   {
+    "__docId__": 100,
     "kind": "testFile",
     "static": true,
     "variation": null,
@@ -1538,6 +1649,7 @@
     "content": "import WordpressConnector from '../../lib/connector';\nimport config from 'config';\nimport {expect} from 'chai';\ndescribe('comments api', function () {\n  this.timeout(5000);\n\n  describe('get comments', () => {\n    let authorization;\n    let _result;\n    let connector;\n    before(() => {\n      authorization = {\n        store: {},\n        get: function (key) {\n          return this.store[key];\n        },\n        delete: function (key) {\n          delete this.store[key];\n          return Promise.resolve(null);\n        },\n        set: function (key, value) {\n          this.store[key] = value;\n          return Promise.resolve(null);\n        },\n        redirect: function () {\n          console.log('redirect', arguments);\n          return Promise.resolve(null);\n        },\n        done: function () {\n          console.log('done', arguments);\n          return Promise.resolve(null);\n        }\n      };\n      connector = new WordpressConnector({clientId: config.get('clientId'), clientSecret: config.get('clientSecret')});\n      authorization.set('AccessToken', config.get('accessToken'));\n      connector.authorize(authorization)\n      return connector.get('/sites/105230485/comments?after=2016-01-13T23:05:38.000Z&status=all').then((result) => {\n        _result = result;\n      });\n\n    });\n    it('returns correct response', () => {\n      console.log(_result)\n      return expect(_result.comments.length).to.be.greaterThan(0);\n    });\n  });\n\n});\n"
   },
   {
+    "__docId__": 101,
     "kind": "testDescribe",
     "static": true,
     "variation": null,
@@ -1551,6 +1663,7 @@
     "lineNumber": 4
   },
   {
+    "__docId__": 102,
     "kind": "testDescribe",
     "static": true,
     "variation": null,
@@ -1564,6 +1677,7 @@
     "lineNumber": 7
   },
   {
+    "__docId__": 103,
     "kind": "testIt",
     "static": true,
     "variation": null,
@@ -1577,6 +1691,7 @@
     "lineNumber": 42
   },
   {
+    "__docId__": 104,
     "kind": "testFile",
     "static": true,
     "variation": null,
@@ -1589,6 +1704,7 @@
     "content": "import WordpressConnector from '../../lib/connector';\nimport config from 'config';\nimport {expect} from 'chai';\ndescribe('posts api', function () {\n  this.timeout(5000);\n  describe('create new post', () => {\n    let authorization;\n    let _result;\n    let connector;\n    let title = \"Post created by Unit Test: \" + new Date();\n    before(() => {\n      authorization = {\n        store: {},\n        get: function (key) {\n          return this.store[key];\n        },\n        delete: function (key) {\n          delete this.store[key];\n          return Promise.resolve(null);\n        },\n        set: function (key, value) {\n          this.store[key] = value;\n          return Promise.resolve(null);\n        },\n        redirect: function () {\n          console.log('redirect', arguments);\n          return Promise.resolve(null);\n        },\n        done: function () {\n          console.log('done', arguments);\n          return Promise.resolve(null);\n        }\n      };\n      connector = new WordpressConnector({clientId: config.get('clientId'), clientSecret: config.get('clientSecret')});\n      authorization.set('AccessToken', config.get('accessToken'));\n      connector.authorize(authorization)\n      return connector.post('/sites/105230485/posts/new', {\n        \"title\": title,\n        \"excerpt\": \"This is a test issue from the Hoist connector unit tests\",\n        \"content\": \"This post was created as a test for hoist.io\",\n        \"author\": \"hoistsupport\"\n      }).then((result) => {\n        console.log(result);\n        _result = result;\n      });\n\n    });\n    it('returns correct response', () => {\n      return expect(_result.title).to.eql(title);\n    });\n  });\n  describe('get posts', () => {\n    let authorization;\n    let _result;\n    let connector;\n    before(() => {\n      authorization = {\n        store: {},\n        get: function (key) {\n          return this.store[key];\n        },\n        delete: function (key) {\n          delete this.store[key];\n          return Promise.resolve(null);\n        },\n        set: function (key, value) {\n          this.store[key] = value;\n          return Promise.resolve(null);\n        },\n        redirect: function () {\n          console.log('redirect', arguments);\n          return Promise.resolve(null);\n        },\n        done: function () {\n          console.log('done', arguments);\n          return Promise.resolve(null);\n        }\n      };\n      connector = new WordpressConnector({clientId: config.get('clientId'), clientSecret: config.get('clientSecret')});\n      authorization.set('AccessToken', config.get('accessToken'));\n      connector.authorize(authorization)\n      return connector.get('/sites/105230485/posts').then((result) => {\n        _result = result;\n      });\n\n    });\n    it('returns correct response', () => {\n      return expect(_result.posts.length).to.be.greaterThan(0);\n    });\n  });\n  describe('edit post', () => {\n    let authorization;\n    let _result;\n    let connector;\n    let title = \"Post edited by Unit Test: \" + new Date();\n    before(() => {\n      authorization = {\n        store: {},\n        get: function (key) {\n          return this.store[key];\n        },\n        delete: function (key) {\n          delete this.store[key];\n          return Promise.resolve(null);\n        },\n        set: function (key, value) {\n          this.store[key] = value;\n          return Promise.resolve(null);\n        },\n        redirect: function () {\n          console.log('redirect', arguments);\n          return Promise.resolve(null);\n        },\n        done: function () {\n          console.log('done', arguments);\n          return Promise.resolve(null);\n        }\n      };\n      connector = new WordpressConnector({clientId: config.get('clientId'), clientSecret: config.get('clientSecret')});\n      authorization.set('AccessToken', config.get('accessToken'));\n      connector.authorize(authorization)\n\n      return connector.get('/sites/105230485/posts').then((r) => {\n        let uri = `/sites/105230485/posts/${r.posts[0].ID}`\n        return connector.post(uri, {\"title\": title}).then((result) => {\n          _result = result;\n        }).catch((err) => {\n          console.log(err);\n        });\n      });\n\n    });\n    it('returns correct response', () => {\n      return expect(_result.title).to.eql(title);\n    });\n  });\n  describe('delete post', () => {\n    let authorization;\n    let _result;\n    let connector;\n    before(() => {\n      authorization = {\n        store: {},\n        get: function (key) {\n          return this.store[key];\n        },\n        delete: function (key) {\n          delete this.store[key];\n          return Promise.resolve(null);\n        },\n        set: function (key, value) {\n          this.store[key] = value;\n          return Promise.resolve(null);\n        },\n        redirect: function () {\n          console.log('redirect', arguments);\n          return Promise.resolve(null);\n        },\n        done: function () {\n          console.log('done', arguments);\n          return Promise.resolve(null);\n        }\n      };\n      connector = new WordpressConnector({clientId: config.get('clientId'), clientSecret: config.get('clientSecret')});\n      authorization.set('AccessToken', config.get('accessToken'));\n      connector.authorize(authorization)\n\n      return connector.get('/sites/105230485/posts?status=publish').then((r) => {\n        let uri = `/sites/105230485/posts/${r.posts[0].ID}/delete`\n        return connector.post(uri, {}).then((result) => {\n          _result = result;\n        }).catch((err) => {\n          console.log(err);\n        });\n      });\n\n    });\n    it('returns correct response', () => {\n      return expect(_result.status).to.eql('trash');\n    });\n  });\n});\n"
   },
   {
+    "__docId__": 105,
     "kind": "testDescribe",
     "static": true,
     "variation": null,
@@ -1602,6 +1718,7 @@
     "lineNumber": 4
   },
   {
+    "__docId__": 106,
     "kind": "testDescribe",
     "static": true,
     "variation": null,
@@ -1615,6 +1732,7 @@
     "lineNumber": 6
   },
   {
+    "__docId__": 107,
     "kind": "testIt",
     "static": true,
     "variation": null,
@@ -1628,6 +1746,7 @@
     "lineNumber": 48
   },
   {
+    "__docId__": 108,
     "kind": "testDescribe",
     "static": true,
     "variation": null,
@@ -1641,6 +1760,7 @@
     "lineNumber": 52
   },
   {
+    "__docId__": 109,
     "kind": "testIt",
     "static": true,
     "variation": null,
@@ -1654,6 +1774,7 @@
     "lineNumber": 87
   },
   {
+    "__docId__": 110,
     "kind": "testDescribe",
     "static": true,
     "variation": null,
@@ -1667,6 +1788,7 @@
     "lineNumber": 91
   },
   {
+    "__docId__": 111,
     "kind": "testIt",
     "static": true,
     "variation": null,
@@ -1680,6 +1802,7 @@
     "lineNumber": 133
   },
   {
+    "__docId__": 112,
     "kind": "testDescribe",
     "static": true,
     "variation": null,
@@ -1693,6 +1816,7 @@
     "lineNumber": 137
   },
   {
+    "__docId__": 113,
     "kind": "testIt",
     "static": true,
     "variation": null,
@@ -1706,6 +1830,7 @@
     "lineNumber": 178
   },
   {
+    "__docId__": 114,
     "kind": "testFile",
     "static": true,
     "variation": null,
@@ -1718,6 +1843,7 @@
     "content": "import WordpressConnector from '../../lib/connector';\nimport config from 'config';\nimport {\n  expect\n}\nfrom 'chai';\ndescribe('get sites', function () {\n  this.timeout(5000);\n  let authorization;\n  let _result;\n  let connector;\n  before(() => {\n    authorization = {\n      store: {},\n      get: function (key) {\n        return this.store[key];\n      },\n      delete: function (key) {\n        delete this.store[key];\n        return Promise.resolve(null);\n      },\n      set: function (key, value) {\n        this.store[key] = value;\n        return Promise.resolve(null);\n      },\n      redirect: function () {\n        console.log('redirect', arguments);\n        return Promise.resolve(null);\n      },\n      done: function () {\n        console.log('done', arguments);\n        return Promise.resolve(null);\n      }\n    };\n    connector = new WordpressConnector({\n      clientId: config.get('clientId'),\n      clientSecret: config.get('clientSecret')\n    });\n    authorization.set('AccessToken', config.get('accessToken'));\n    connector.authorize(authorization)\n    return connector.get('/me/sites')\n      .then((result) => {\n        console.log(result);\n        _result = result;\n      });\n\n  });\n  it('returns users projects', () => {\n    return expect(_result.sites.map((site) => site.name)).to.contain('hoistio');\n  });\n});\n"
   },
   {
+    "__docId__": 115,
     "kind": "testDescribe",
     "static": true,
     "variation": null,
@@ -1731,6 +1857,7 @@
     "lineNumber": 7
   },
   {
+    "__docId__": 116,
     "kind": "testIt",
     "static": true,
     "variation": null,
@@ -1744,6 +1871,7 @@
     "lineNumber": 48
   },
   {
+    "__docId__": 117,
     "kind": "testFile",
     "static": true,
     "variation": null,
@@ -1756,6 +1884,7 @@
     "content": "import GitLabConnector from '../../lib/connector';\nimport {\n  expect\n}\nfrom 'chai';\ndescribe('default settings', () => {\n  let connector;\n  it('exposes defaultSettings method', () => {\n    return expect(GitLabConnector.defaultSettings).to.exist;\n  });\n})\n"
   },
   {
+    "__docId__": 118,
     "kind": "testDescribe",
     "static": true,
     "variation": null,
@@ -1769,6 +1898,7 @@
     "lineNumber": 6
   },
   {
+    "__docId__": 119,
     "kind": "testIt",
     "static": true,
     "variation": null,
