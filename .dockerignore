@@ -1,6 +1,5 @@
 \.git
 \..*
-*\.sh
 *\.service
 build-scripts
 dockerfiles
