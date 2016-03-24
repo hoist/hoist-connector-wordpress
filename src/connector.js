@@ -1,5 +1,9 @@
-import {OAuth2ConnectorBase} from '@hoist/oauth-connector';
-import {merge} from 'lodash';
+import {
+  OAuth2ConnectorBase
+} from '@hoist/oauth-connector';
+import {
+  merge
+} from 'lodash';
 
 let overrides = {
   baseSite: 'https://public-api.wordpress.com',
@@ -7,19 +11,22 @@ let overrides = {
   authorizationPath: '/oauth2/authorize'
 };
 let apiBaseUri = 'https://public-api.wordpress.com/rest/v1.1'
-/**
+  /**
    * A Hoist Connector for connecting to GitLab
    * @extends {OAuth2ConnectorBase}
    */
 export default class WordpressConnector extends OAuth2ConnectorBase {
 
-  /**
+  /**import {
+  merge
+} from 'lodash';
+
    * create a new connector
    * @param {object} configuration - the configuration properties to use
    * @param {string} configuration.clientId - the OAuth2 client id
    * @param {string} configuration.clientSecret - the OAuth2 client secret
    */
-  constructor (configuration) {
+  constructor(configuration) {
     super(merge({}, configuration, overrides));
     this._clientId = configuration.clientId;
     this._configuration = configuration;
@@ -30,15 +37,15 @@ export default class WordpressConnector extends OAuth2ConnectorBase {
    * @param AuthorizationStore authorization the users authorisation store
    * @returns Promise<object> an object containing key value pairs to send with the client to the authorization url
    */
-  _authorizeParams (authorization) {
-    return super._authorizeParams(authorization).then((params) => {
-      params.response_type = "code";
-      params.scope = 'global';
-      return params;
-    });
-  }
-  //use authorization params as it has redirect uri
-  _accessParams (authorization) {
+  _authorizeParams(authorization) {
+      return super._authorizeParams(authorization).then((params) => {
+        params.response_type = "code";
+        params.scope = 'global';
+        return params;
+      });
+    }
+    //use authorization params as it has redirect uri
+  _accessParams(authorization) {
     return super._authorizeParams(authorization).then((params) => {
       return params || {};
     }).then((params) => {
@@ -46,35 +53,35 @@ export default class WordpressConnector extends OAuth2ConnectorBase {
       return params;
     });
   }
-  static defaultSettings () {
+  static defaultSettings() {
     return Promise.resolve({});
   }
 
-  get (path) {
+  get(path) {
     let uri = `${apiBaseUri}${path}`;
     return this._performRequest('GET', uri).then((result) => {
       return JSON.parse(result);
     });
   }
-  post (path, body) {
+  post(path, body) {
     let uri = `${apiBaseUri}${path}`;
     return this._performRequest('POST', uri, body).then((result) => {
       return JSON.parse(result);
     });
   }
-  put (path, body) {
+  put(path, body) {
     let uri = `${apiBaseUri}${path}`;
     return this._performRequest('PUT', uri, body).then((result) => {
       return JSON.parse(result);
     });
   }
-  patch (path, body) {
+  patch(path, body) {
     let uri = `${apiBaseUri}${path}`;
     return this._performRequest('PATCH', uri, body).then((result) => {
       return JSON.parse(result);
     });
   }
-  delete (path) {
+  delete(path) {
     let uri = `${apiBaseUri}${path}`;
     return this._performRequest('DELETE', uri).then((result) => {
       return JSON.parse(result[0]);

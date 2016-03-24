@@ -17,13 +17,10 @@ checkout:
     - find . -exec touch -t 201401010000 {} \;
     - for x in $(git ls-tree --full-tree --name-only -r HEAD); do touch -t $(date -d "$(git log -1 --format=%ci "${x}")" +%y%m%d%H%M.%S) "${x}"; done
 dependencies:
-  cache_directories:
-    - "~/docker"
   override:
-    - mkdir -p ~/docker
-    - if [[ -e ~/docker/connector-wordpress.tar ]]; then docker load -i ~/docker/connector-wordpress.tar; fi
+    - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+    - docker pull hoist/connector-wordpress:${CIRCLE_BRANCH//feature\//}
     - docker build -t hoist/connector-wordpress:${CIRCLE_BRANCH//feature\//} .
-    - docker save "hoist/connector-wordpress" > ~/docker/connector-wordpress.tar
 test:
   override:
     - docker kill mongodb; true;
@@ -45,7 +42,6 @@ deployment:
     branch: [master,/feature\/.*/]
     owner: hoist
     commands:
-      - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
       - docker push hoist/connector-wordpress:${CIRCLE_BRANCH//feature\//}
 notify:
   webhooks:
