@@ -19,7 +19,7 @@ checkout:
 dependencies:
   override:
     - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-    - docker pull hoist/connector-wordpress:${CIRCLE_BRANCH//feature\//}
+    - docker pull hoist/connector-wordpress:${CIRCLE_BRANCH//feature\//}; true;
     - docker build -t hoist/connector-wordpress:${CIRCLE_BRANCH//feature\//} .
 test:
   override:
